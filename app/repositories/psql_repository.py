@@ -5,8 +5,9 @@ from . import ModelType
 
 
 class PsqlRepository(BaseRepository):
-    def __init__(self, model: Type[ModelType]) -> None:
+    def __init__(self, db: Session, model: Type[ModelType]) -> None:
+        self.db = db
         self.model = model
 
-    def get_all(self, db: Session) -> List[ModelType]:
-        return db.query(self.model).all()
+    def get_all(self) -> List[ModelType]:
+        return self.db.query(self.model).all()
