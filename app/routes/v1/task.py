@@ -9,7 +9,7 @@ tasks_router = APIRouter()
 
 
 def get_task_repository(db: Session = Depends(get_db)) -> PsqlRepository:
-    return PsqlRepository(db)
+    return PsqlRepository(db, Task)
 
 
 @tasks_router.get("/")
