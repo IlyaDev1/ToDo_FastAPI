@@ -11,4 +11,4 @@ class Task(Base):
     description = Column(Text, nullable=True, default=None)
     is_completed = Column(Boolean, nullable=False, default=False)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
-    deadline = Column(DateTime, nullable=True)
+    deadline = Column(DateTime, nullable=True, default=None)
