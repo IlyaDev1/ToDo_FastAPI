@@ -6,3 +6,6 @@ from .config import settings
 class Database:
     engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+database = Database()
