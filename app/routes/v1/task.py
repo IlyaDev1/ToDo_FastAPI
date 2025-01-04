@@ -1,17 +1,11 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from app.repositories.psql_repository import PsqlRepository
-from app.models.todo import Task
-from app.core.dependencies import get_db
+from fastapi import APIRouter
+from app.service.db_service import TaskService
 
 
 tasks_router = APIRouter()
-
-
-def get_task_repository(db: Session = Depends(get_db)) -> PsqlRepository:
-    return PsqlRepository(db, Task)
+tasks_service = TaskService()
 
 
 @tasks_router.get("/")
-async def list_tasks(repo: PsqlRepository = Depends(get_task_repository)):
-    return repo.get_all()
+def list_tasks():
+    return tasks_service.get_all_tasks()
