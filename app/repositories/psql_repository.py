@@ -3,5 +3,6 @@ from . import ModelType
 
 
 class PsqlRepository(RelationalRepository):
-    def get_all(self) -> list[ModelType]:
-        return self.db.query(self.model).all()
+    pass
+    # def get_all(self) -> list[ModelType]:
+    #     return self.db.query(self.model).all()
