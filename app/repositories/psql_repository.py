@@ -1,8 +1,10 @@
 from .relational_repository import RelationalRepository
 from . import ModelType
+from sqlalchemy.orm import Session
+from typing import Type
 
 
 class PsqlRepository(RelationalRepository):
-    pass
-    # def get_all(self) -> list[ModelType]:
-    #     return self.db.query(self.model).all()
+    def __init__(self, db: Session, model: Type[ModelType]) -> None:
+        self.db = db
+        self.model = model
