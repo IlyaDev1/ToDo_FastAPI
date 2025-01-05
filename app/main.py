@@ -1,14 +1,12 @@
-import uvicorn
 from fastapi import FastAPI
+from app.routes.v1 import api_router
 
 
-app = FastAPI()
+app = FastAPI(
+    title="Task Management API",
+    version="1.0.0",
+    description="API for managing tasks and users"
+)
 
 
-@app.get('/', summary='Главная ручка')
-def root():
-    return {'msg': 'start'}
-
-
-if __name__ == '__main__':
-    uvicorn.run('main:app', reload=True, port=8080)
+app.include_router(api_router, prefix="/api/v1")
