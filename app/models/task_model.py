@@ -3,7 +3,7 @@ from app.models.base import Base
 from datetime import datetime
 
 
-class Task(Base):
+class TaskModel(Base):
     __tablename__ = "task"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
