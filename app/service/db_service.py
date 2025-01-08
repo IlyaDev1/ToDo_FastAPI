@@ -1,4 +1,4 @@
-from app.repositories.psql_repository import PsqlRepository
+from app.repositories.specific_dms.psql_repository import PsqlRepository
 from app.models.task_model import TaskModel
 from app.core.dependencies import get_db
 from fastapi import Depends
