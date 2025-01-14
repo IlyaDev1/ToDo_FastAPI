@@ -1,4 +1,4 @@
-from app.entities.task_entity import TaskEntity
+from app.entities.task_entity.task_entity import TaskEntity
 from app.repositories.specific_dms.psql_repository import PsqlRepository
 from app.repositories.task.task_repository import TaskRepository
 

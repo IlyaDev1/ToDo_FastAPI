@@ -1,4 +1,4 @@
-from app.repositories.specific_dms.psql_repository import PsqlRepository
+from app.repositories.task.impl.task_psql_repository import TaskPSQLRepository
 from app.models.task_model import TaskModel
 from app.core.dependencies import get_db
 from fastapi import Depends
@@ -6,7 +6,7 @@ from fastapi import Depends
 
 class TaskService:
     def __init__(self):
-        self.psql_repo: PsqlRepository = PsqlRepository(Depends(get_db), TaskModel)
+        self.task_psql_repo: TaskPSQLRepository = TaskPSQLRepository(Depends(get_db), TaskModel)
 
     def get_all_tasks(self):
-        return self.psql_repo.get_all()
+        return self.task_psql_repo.get_all()
