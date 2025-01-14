@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from .specific_dms import ModelType, SessionType
+from . import ModelType, SessionType
 from typing import Generic, Type
 
 
