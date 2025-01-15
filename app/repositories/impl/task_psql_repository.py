@@ -7,7 +7,7 @@ from typing import Type
 
 class TaskPSQLRepository(TaskRepository):
     def __init__(self, session_instance: Session) -> None:
-        self.session_instance: Session = session_instance
+        self.session_instance = session_instance
         self.model_class: Type[TaskModel] = TaskModel
 
     def get_all_tasks(self) -> list[TaskEntity]:
