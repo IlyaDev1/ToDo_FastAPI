@@ -1,8 +1,5 @@
 from app.repositories.task_repository import TaskRepository
-from app.models.task_model import TaskModel
-from app.core.dependencies import get_db
 from app.entities.task_entity import TaskEntity
-from fastapi import Depends
 from inject import instance
 
 
