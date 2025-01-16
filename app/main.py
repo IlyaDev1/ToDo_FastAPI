@@ -1,11 +1,17 @@
 from fastapi import FastAPI
 from app.routes.v1 import api_router
+from inject import configure
+from app.core.dependencies import production_config
+from app.core.config import settings
+
+
+configure(production_config)
 
 
 app = FastAPI(
-    title="Task Management API",
-    version="1.0.0",
-    description="API for managing tasks and users"
+    title=settings.APP_NAME,
+    version=settings.API_V1_STR,
+    description=settings.DESCRIPTION
 )
 
 
