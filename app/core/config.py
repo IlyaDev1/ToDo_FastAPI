@@ -2,6 +2,7 @@ class Settings:
     APP_NAME: str = "Task Management API"
     API_V1_STR: str = "/api/v1"
     DATABASE_URL: str = "postgresql://user:password@localhost/dbname"
+    DESCRIPTION: str = "API for managing tasks and users"
     DEBUG: bool = True
 
     SECRET_KEY: str = "super-secret-key"
