@@ -13,8 +13,3 @@ def get_db() -> Session:
     finally:
         db.commit()
         db.close()
-
-
-def production_config(binder):
-    with get_db() as db:
-        binder.bind(TaskRepository, TaskPSQLRepository(db))
