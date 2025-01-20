@@ -10,7 +10,8 @@ COPY . /todo/
 
 ENV PYTHONWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/todo
 
 EXPOSE 8000
 
-CMD ["python", "todo/app/main.py"]
+CMD ["python", "app/main.py"]
