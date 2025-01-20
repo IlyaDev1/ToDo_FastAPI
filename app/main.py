@@ -1,9 +1,10 @@
 from uvicorn import run
 from fastapi import FastAPI
 from app.routes.v1 import api_router
-from inject import configure
-from app.core.binding import production_config
 from app.core.config import settings
+from app.core.binding import production_config
+from inject import configure
+
 
 
 configure(production_config)

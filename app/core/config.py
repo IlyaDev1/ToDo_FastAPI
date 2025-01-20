@@ -1,7 +1,7 @@
 class Settings:
     APP_NAME: str = "Task Management API"
     API_V1_STR: str = "/api/v1"
-    DATABASE_URL: str = "postgresql://user:password@localhost/dbname"
+    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5433/postgres"
     DESCRIPTION: str = "API for managing tasks and users"
     DEBUG: bool = True
 
