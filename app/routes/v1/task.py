@@ -1,9 +1,12 @@
 from fastapi import APIRouter
 from app.service.db_service import TaskService
+from inject import is_configured
 
 
 tasks_router = APIRouter()
-tasks_service = TaskService()
+
+if is_configured():
+    tasks_service = TaskService()
 
 
 @tasks_router.get("/")
