@@ -1,13 +1,13 @@
 from uvicorn import run
 from fastapi import FastAPI
-from app.routes.v1 import api_router
 from app.core.config import settings
 from app.core.binding import production_config
-from inject import configure
+from inject import configure, is_configured
+from app.routes.v1 import api_router
 
 
-
-configure(production_config)
+if not is_configured():
+    configure(production_config)
 
 
 app = FastAPI(
@@ -15,7 +15,6 @@ app = FastAPI(
     version=settings.API_V1_STR,
     description=settings.DESCRIPTION
 )
-
 
 app.include_router(api_router, prefix="/api/v1")
 
