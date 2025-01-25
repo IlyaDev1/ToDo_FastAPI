@@ -3,11 +3,11 @@ from fastapi import FastAPI
 from app.core.config import settings
 from app.core.binding import production_config
 from inject import configure, is_configured
-from app.routes.v1 import api_router
-
 
 if not is_configured():
     configure(production_config)
+
+from app.routes.v1 import api_router
 
 
 app = FastAPI(
