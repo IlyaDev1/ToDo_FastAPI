@@ -1,15 +1,17 @@
+from os import getenv
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+
 class Settings:
-    APP_NAME: str = "Task Management API"
-    API_V1_STR: str = "/api/v1"
-    DATABASE_URL: str = "postgresql://postgres:postgres@db:5432/postgres"
-    DESCRIPTION: str = "API for managing tasks and users"
-    DEBUG: bool = True
-
-    SECRET_KEY: str = "super-secret-key"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-
-    # class Config:  пока не использую переменные окружения
-    #     env_file = ".env"
+    APP_NAME: str = getenv('APP_NAME')
+    API_V1_STR: str = getenv('API_V1_STR')
+    DATABASE_URL: str = getenv('DATABASE_URL')
+    DESCRIPTION: str = getenv('DESCRIPTION')
+    DEBUG: bool = getenv('DEBUG').lower() == 'true'
+    APP_CONTAINER_PORT: int = int(getenv('APP_CONTAINER_PORT'))
 
 
 settings = Settings()
