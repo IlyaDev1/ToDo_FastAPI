@@ -7,7 +7,7 @@ from inject import configure, is_configured
 if not is_configured():
     configure(production_config)
 
-from app.routes.v1 import api_router
+from app.api.routes.v1 import api_router
 
 
 app = FastAPI(
