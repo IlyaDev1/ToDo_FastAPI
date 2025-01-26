@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from app.entities.task_entity import TaskEntity
+from app.core.entities.task_entity import TaskEntity
 
 
 class TaskRepository(ABC):

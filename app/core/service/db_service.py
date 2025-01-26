@@ -1,5 +1,5 @@
-from app.repositories.task_repository import TaskRepository
-from app.entities.task_entity import TaskEntity
+from app.core.repositories.task_repository import TaskRepository
+from app.core.entities.task_entity import TaskEntity
 from inject import instance
 
 

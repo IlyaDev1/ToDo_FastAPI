@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.service.db_service import TaskService
+from app.core.service.db_service import TaskService
 from inject import is_configured
 
 

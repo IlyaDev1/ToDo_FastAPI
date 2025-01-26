@@ -1,6 +1,6 @@
 from ..task_repository import TaskRepository
 from sqlalchemy.orm import Session
-from app.models.task_model import TaskModel
+from app.core.models.task_model import TaskModel
 from ..task_repository import TaskEntity
 from typing import Type
 

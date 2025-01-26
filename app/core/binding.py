@@ -1,6 +1,6 @@
 from .dependencies import get_db
-from app.repositories.task_repository import TaskRepository
-from app.repositories.impl.task_psql_repository import TaskPSQLRepository
+from app.core.repositories.task_repository import TaskRepository
+from app.core.repositories.impl.task_psql_repository import TaskPSQLRepository
 
 
 def production_config(binder):
