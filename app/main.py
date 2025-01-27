@@ -1,7 +1,7 @@
 from uvicorn import run
 from fastapi import FastAPI
 from app.core.config import settings
-from app.core.binding import production_config
+from app.core import production_config
 from inject import configure, is_configured
 
 if not is_configured():
