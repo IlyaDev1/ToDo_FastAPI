@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./alembic/versions:todo/alembic/versions
+      - ./alembic/versions:/todo/alembic/versions
 
   db:
     image: postgres:16
