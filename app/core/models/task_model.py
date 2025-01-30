@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, Text, DateTime, func
 from app.core.models.base import Base
-from datetime import datetime
 
 
 class TaskModel(Base):
