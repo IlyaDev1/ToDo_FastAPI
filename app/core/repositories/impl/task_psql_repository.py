@@ -2,7 +2,7 @@ from ..task_repository import TaskRepository
 from sqlalchemy.orm import Session
 from app.core.models.task_model import TaskModel
 from ..task_repository import TaskEntity
-from typing import Type
+from typing import Type, Union
 
 
 class TaskPSQLRepository(TaskRepository):
@@ -21,8 +21,17 @@ class TaskPSQLRepository(TaskRepository):
                 created_at=task.created_at,
                 deadline=task.deadline,
             )
-            for task in tasks
-        ]
+            for task in tasks]
 
-    def get_task_by_id(self, id_value: int) -> TaskEntity:
-        return self.session_instance.query(self.model_class).get(id_value)
+    def get_task_by_id(self, id_value: int) -> Union[TaskEntity, None]:
+        task = self.session_instance.query(self.model_class).get(id_value)
+        if task:
+            return TaskEntity(
+                id=task.id,
+                title=task.title,
+                description=task.description,
+                is_completed=task.is_completed,
+                created_at=task.created_at,
+                deadline=task.deadline,
+            )
+        return None
