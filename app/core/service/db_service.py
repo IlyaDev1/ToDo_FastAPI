@@ -9,3 +9,6 @@ class TaskService:
 
     def get_all_tasks(self) -> list[TaskEntity]:
         return self.task_repo.get_all_tasks()
+
+    def get_task_by_id(self, id_value) -> TaskEntity:
+        return self.task_repo.get_task_by_id(id_value)

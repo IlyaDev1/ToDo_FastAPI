@@ -23,3 +23,6 @@ class TaskPSQLRepository(TaskRepository):
             )
             for task in tasks
         ]
+
+    def get_task_by_id(self, id_value: int) -> TaskEntity:
+        return self.session_instance.query(self.model_class).get(id_value)

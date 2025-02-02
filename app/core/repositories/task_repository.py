@@ -6,3 +6,7 @@ class TaskRepository(ABC):
     @abstractmethod
     def get_all_tasks(self) -> list[TaskEntity]:
         ...
+
+    @abstractmethod
+    def get_task_by_id(self, id_value: int) -> TaskEntity:
+        ...
