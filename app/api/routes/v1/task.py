@@ -19,5 +19,5 @@ def list_tasks():
 def get_task(task_id: int):
     task = tasks_service.get_task_by_id(task_id)
     if task is None:
-        return JSONResponse(content={'msg': 'task with this id is not exists'}, status_code=404)
+        return JSONResponse(content={'msg': 'task with this ID does not exist'}, status_code=404)
     return task
