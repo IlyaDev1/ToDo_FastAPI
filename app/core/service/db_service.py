@@ -13,3 +13,6 @@ class TaskService:
 
     def get_task_by_id(self, id_value: int) -> Union[TaskEntity, None]:
         return self.task_repo.get_task_by_id(id_value)
+
+    def create_task(self, task_data: TaskEntity) -> TaskEntity:
+        return self.task_repo.create_task(task_data)

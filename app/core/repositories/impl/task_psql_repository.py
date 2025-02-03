@@ -30,3 +30,14 @@ class TaskPSQLRepository(TaskRepository):
         if task:
             return map_task_model_to_entity(task)
         return None
+
+    def create_task(self, task_data: TaskEntity) -> TaskEntity:
+        new_task: TaskModel = TaskModel(
+            title=task_data.title,
+            description=task_data.description,
+            is_completed=task_data.is_completed,
+            deadline=task_data.deadline
+        )
+        self.session_instance.add(new_task)
+        self.session_instance.refresh(new_task)
+        return task_data

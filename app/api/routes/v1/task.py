@@ -2,6 +2,8 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from app.core.service.db_service import TaskService
 from inject import is_configured
+from app.api.schemas.task import TaskBase
+from app.core.entities.task_entity import TaskEntity
 
 
 tasks_router = APIRouter()
@@ -21,3 +23,17 @@ def get_task(task_id: int):
     if task is None:
         return JSONResponse(content={'msg': 'task with this ID does not exist'}, status_code=404)
     return task
+
+
+@tasks_router.post('/')
+def create_task(task_data: TaskBase):
+    task_entity = TaskEntity(
+        id=None,
+        title=task_data.title,
+        description=task_data.description,
+        is_completed=False,
+        created_at=None,
+        deadline=TaskBase.deadline
+    )
+    created_task = tasks_service.create_task(task_entity)
+    return created_task

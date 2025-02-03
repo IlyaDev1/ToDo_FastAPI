@@ -4,9 +4,9 @@ from datetime import datetime
 
 @dataclass
 class TaskEntity:
-    id: int
+    id: int | None
     title: str
     description: str
     is_completed: bool
-    created_at: datetime
+    created_at: datetime | None
     deadline: datetime

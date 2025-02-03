@@ -10,3 +10,7 @@ class TaskRepository(ABC):
     @abstractmethod
     def get_task_by_id(self, id_value: int) -> TaskEntity | None:
         ...
+
+    @abstractmethod
+    def create_task(self, task_data: TaskEntity) -> TaskEntity:
+        ...
