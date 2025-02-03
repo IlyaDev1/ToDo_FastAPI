@@ -2,7 +2,6 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from app.core.service.db_service import TaskService
 from inject import is_configured
-from typing import Union
 
 
 tasks_router = APIRouter()
@@ -17,7 +16,7 @@ def list_tasks():
 
 
 @tasks_router.get('/{task_id}')
-def get_task(task_id: Union[int, None]):
+def get_task(task_id: int):
     task = tasks_service.get_task_by_id(task_id)
     if task is None:
         return JSONResponse(content={'msg': 'task with this id is not exists'}, status_code=404)
