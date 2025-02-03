@@ -39,5 +39,6 @@ class TaskPSQLRepository(TaskRepository):
             deadline=task_data.deadline
         )
         self.session_instance.add(new_task)
+        self.session_instance.commit()
         self.session_instance.refresh(new_task)
         return task_data

@@ -9,4 +9,4 @@ class TaskEntity:
     description: str
     is_completed: bool
     created_at: datetime | None
-    deadline: datetime
+    deadline: datetime | None

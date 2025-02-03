@@ -33,7 +33,7 @@ def create_task(task_data: TaskBase):
         description=task_data.description,
         is_completed=False,
         created_at=None,
-        deadline=TaskBase.deadline
+        deadline=task_data.deadline
     )
     created_task = tasks_service.create_task(task_entity)
     return created_task
