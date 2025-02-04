@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from app.core.service.db_service import TaskService
 from inject import is_configured
-from app.api.schemas.task import TaskBase
+from app.api.schemas.task import TaskCreate
 from app.core.entities.task_entity import TaskEntity
 
 
@@ -26,13 +26,10 @@ def get_task(task_id: int):
 
 
 @tasks_router.post('/')
-def create_task(task_data: TaskBase):
+def create_task(task_data: TaskCreate):
     task_entity = TaskEntity(
-        id=None,
         title=task_data.title,
         description=task_data.description,
-        is_completed=False,
-        created_at=None,
         deadline=task_data.deadline
     )
     created_task = tasks_service.create_task(task_entity)

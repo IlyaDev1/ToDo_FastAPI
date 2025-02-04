@@ -6,7 +6,6 @@ from typing import Optional
 class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
-    is_completed: bool = False
     deadline: Optional[datetime] = None
 
 

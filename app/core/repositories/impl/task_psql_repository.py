@@ -35,7 +35,6 @@ class TaskPSQLRepository(TaskRepository):
         new_task: TaskModel = TaskModel(
             title=task_data.title,
             description=task_data.description,
-            is_completed=task_data.is_completed,
             deadline=task_data.deadline
         )
         self.session_instance.add(new_task)
