@@ -28,9 +28,12 @@ def get_task(task_id: int):
 @tasks_router.post('/')
 def create_task(task_data: TaskCreate):
     task_entity = TaskEntity(
+        id=None,
         title=task_data.title,
         description=task_data.description,
-        deadline=task_data.deadline
+        is_completed=None,
+        created_at=None,
+        deadline=task_data.deadline,
     )
     created_task = tasks_service.create_task(task_entity)
     return created_task
