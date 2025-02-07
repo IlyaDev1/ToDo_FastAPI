@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 @dataclass
-class TaskEntity:
+class TaskDTO:
     id: int
     title: str
     description: str | None
