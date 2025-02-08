@@ -1,7 +1,7 @@
 from app.core.repositories.task_repository import TaskRepository
-from app.core.entities.task_entity import TaskEntity
 from inject import instance
-from typing import Union
+from app.core.entities.task_entity import TaskEntity
+from app.core.dtos.task_dto import TaskDTO
 
 
 class TaskService:
@@ -9,7 +9,14 @@ class TaskService:
         self.task_repo: TaskRepository = instance(TaskRepository)
 
     def get_all_tasks(self) -> list[TaskEntity]:
-        return self.task_repo.get_all_tasks()
+        tasks_dto = self.task_repo.get_all_tasks()
+        return tasks_dto
 
-    def get_task_by_id(self, id_value: int) -> Union[TaskEntity, None]:
-        return self.task_repo.get_task_by_id(id_value)
+    def get_task_by_id(self, id_value: int) -> TaskEntity | None:
+        result = self.task_repo.get_task_by_id(id_value)
+        if result:
+            return result
+        return None
+
+    def create_task(self, task: TaskDTO) -> TaskEntity:
+        return self.task_repo.create_task(task)
