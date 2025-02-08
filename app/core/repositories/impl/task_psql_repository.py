@@ -35,9 +35,9 @@ class TaskPSQLRepository(TaskRepository):
 
     def create_task(self, task: TaskDTO) -> TaskEntity:
         task = TaskModel(
-            task.title,
-            task.description,
-            task.deadline
+            title=task.title,
+            description=task.description,
+            deadline=task.deadline
         )
         self.session_instance.add(task)
         self.session_instance.commit()
