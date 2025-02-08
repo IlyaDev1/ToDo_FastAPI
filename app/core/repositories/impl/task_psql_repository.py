@@ -4,6 +4,8 @@ from app.core.models.task_model import TaskModel
 from app.core.entities.task_entity import TaskEntity
 from typing import Type
 
+from ...dtos.task_dto import TaskDTO
+
 
 def map_task_model_to_entity(task_instance: TaskModel) -> TaskEntity:
     return TaskEntity(
@@ -30,3 +32,13 @@ class TaskPSQLRepository(TaskRepository):
         if task:
             return map_task_model_to_entity(task)
         return None
+
+    def create_task(self, task: TaskDTO) -> TaskEntity:
+        task = TaskModel(
+            task.title,
+            task.description,
+            task.deadline
+        )
+        self.session_instance.add(task)
+        self.session_instance.commit()
+        return map_task_model_to_entity(task)
