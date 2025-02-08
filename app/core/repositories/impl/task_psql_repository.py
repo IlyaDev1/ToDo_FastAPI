@@ -1,12 +1,12 @@
 from ..task_repository import TaskRepository
 from sqlalchemy.orm import Session
 from app.core.models.task_model import TaskModel
-from app.core.dtos.task_dto import TaskDTO
+from app.core.entities.task_entity import TaskEntity
 from typing import Type
 
 
-def map_task_model_to_dto(task_instance: Type[TaskModel]) -> TaskDTO:
-    return TaskDTO(
+def map_task_model_to_entity(task_instance: TaskModel) -> TaskEntity:
+    return TaskEntity(
         id=task_instance.id,
         title=task_instance.title,
         description=task_instance.description,
@@ -21,12 +21,12 @@ class TaskPSQLRepository(TaskRepository):
         self.session_instance = session_instance
         self.model_class: Type[TaskModel] = TaskModel
 
-    def get_all_tasks(self) -> list[TaskDTO]:
+    def get_all_tasks(self) -> list[TaskEntity]:
         tasks: list[TaskModel] = self.session_instance.query(self.model_class).all()
-        return [map_task_model_to_dto(task) for task in tasks]
+        return [map_task_model_to_entity(task) for task in tasks]
 
-    def get_task_by_id(self, id_value: int) -> TaskDTO | None:
+    def get_task_by_id(self, id_value: int) -> TaskEntity | None:
         task: TaskModel | None = self.session_instance.query(self.model_class).get(id_value)
         if task:
-            return map_task_model_to_dto(task)
+            return map_task_model_to_entity(task)
         return None
