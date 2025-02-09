@@ -8,6 +8,8 @@ def get_db() -> Session:
     db = database.SessionLocal()
     try:
         yield db
+    except Exception:
+        db.rollback()
+        raise
     finally:
-        db.commit()
         db.close()
