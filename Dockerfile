@@ -12,4 +12,4 @@ ENV PYTHONWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/todo
 
-CMD ["python", "app/main.py"]
+CMD alembic upgrade head && python app/main.py
