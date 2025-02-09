@@ -4,7 +4,6 @@ from datetime import datetime
 
 @dataclass
 class TaskDTO:
-    id: int | None
     title: str
     description: str | None
     is_completed: bool
