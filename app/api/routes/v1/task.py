@@ -14,7 +14,6 @@ if is_configured():
 
 def map_task_pydantic_to_dto(task_pydantic_instance: TaskCreate):
     return TaskDTO(
-        id=None,
         title=task_pydantic_instance.title,
         description=task_pydantic_instance.description,
         is_completed=False,

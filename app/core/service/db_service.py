@@ -6,7 +6,7 @@ from app.core.dtos.task_dto import TaskDTO
 
 class TaskService:
     def __init__(self) -> None:
-        self.task_repo: TaskRepository = instance(TaskRepository)
+        self.task_repo = instance(TaskRepository)
 
     def get_all_tasks(self) -> list[TaskEntity]:
         tasks_dto = self.task_repo.get_all_tasks()
