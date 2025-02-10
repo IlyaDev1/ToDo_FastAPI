@@ -42,3 +42,12 @@ class TaskPSQLRepository(TaskRepository):
         self.session_instance.add(task)
         self.session_instance.commit()
         return map_task_model_to_entity(task)
+
+    def delete_task_by_id(self, id_value: int) -> TaskEntity | None:
+        task_instance = self.session_instance.query(self.model_class).get(id_value)
+        if task_instance:
+            task_entity_instance = map_task_model_to_entity(task_instance)
+            self.session_instance.delete(task_instance)
+            self.session_instance.commit()
+            return task_entity_instance
+        return None
