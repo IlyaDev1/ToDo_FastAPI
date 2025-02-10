@@ -4,6 +4,8 @@ from app.core.service.db_service import TaskService
 from inject import is_configured
 from app.api.schemas.task import TaskCreate
 from app.core.dtos.task_dto import TaskDTO
+from typing import Any
+from app.core.entities.task_entity import TaskEntity
 
 
 tasks_router = APIRouter()
@@ -22,6 +24,12 @@ def map_task_pydantic_to_dto(task_pydantic_instance: TaskCreate):
     )
 
 
+def task_not_found_response(instance: Any | None) -> TaskEntity | JSONResponse:
+    if instance:
+        return instance
+    return JSONResponse(content={'msg': 'task with this ID does not exist'}, status_code=404)
+
+
 @tasks_router.get("/")
 def list_tasks():
     return tasks_service.get_all_tasks()
@@ -30,9 +38,7 @@ def list_tasks():
 @tasks_router.get('/{task_id}')
 def get_task(task_id: int):
     task = tasks_service.get_task_by_id(task_id)
-    if task is None:
-        return JSONResponse(content={'msg': 'task with this ID does not exist'}, status_code=404)
-    return task
+    return task_not_found_response(task)
 
 
 @tasks_router.post('/')
@@ -44,6 +50,4 @@ def create_task(task_pydantic_instance: TaskCreate):
 @tasks_router.delete('/{task_id}')
 def delete_task(task_id: int):
     task = tasks_service.delete_task_by_id(task_id)
-    if task is None:
-        return JSONResponse(content={'msg': 'task with this ID does not exist'}, status_code=404)
-    return task
+    return task_not_found_response(task)
