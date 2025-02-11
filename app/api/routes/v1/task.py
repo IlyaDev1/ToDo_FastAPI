@@ -4,7 +4,6 @@ from app.core.service.db_service import TaskService
 from inject import is_configured
 from app.api.schemas.task import TaskCreate
 from app.core.dtos.task_dto import TaskDTO
-from typing import Any
 from app.core.entities.task_entity import TaskEntity
 
 
@@ -24,7 +23,7 @@ def map_task_pydantic_to_dto(task_pydantic_instance: TaskCreate):
     )
 
 
-def task_not_found_response(instance: Any | None) -> TaskEntity | JSONResponse:
+def task_not_found_response(instance: TaskEntity | None) -> TaskEntity | JSONResponse:
     if instance:
         return instance
     return JSONResponse(content={'msg': 'task with this ID does not exist'}, status_code=404)
