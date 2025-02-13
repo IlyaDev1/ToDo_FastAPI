@@ -1,10 +1,12 @@
-from ..task_repository import TaskRepository
-from sqlalchemy.orm import Session
-from app.core.models.task_model import TaskModel
-from app.core.entities.task_entity import TaskEntity
 from typing import Type
 
+from sqlalchemy.orm import Session
+
+from app.core.entities.task_entity import TaskEntity
+from app.core.models.task_model import TaskModel
+
 from ...dtos.task_dto import TaskDTO
+from ..task_repository import TaskRepository
 
 
 def map_task_model_to_entity(task_instance: TaskModel) -> TaskEntity:
@@ -28,16 +30,16 @@ class TaskPSQLRepository(TaskRepository):
         return [map_task_model_to_entity(task) for task in tasks]
 
     def get_task_by_id(self, id_value: int) -> TaskEntity | None:
-        task: TaskModel | None = self.session_instance.query(self.model_class).get(id_value)
+        task: TaskModel | None = self.session_instance.query(self.model_class).get(
+            id_value
+        )
         if task:
             return map_task_model_to_entity(task)
         return None
 
     def create_task(self, task: TaskDTO) -> TaskEntity:
         task = TaskModel(
-            title=task.title,
-            description=task.description,
-            deadline=task.deadline
+            title=task.title, description=task.description, deadline=task.deadline
         )
         self.session_instance.add(task)
         self.session_instance.commit()
