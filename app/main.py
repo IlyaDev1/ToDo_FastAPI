@@ -9,6 +9,7 @@ if not is_configured():
     configure(production_config)
 
 from app.api.routes.v1 import api_router
+from logger import logger
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -20,4 +21,5 @@ app.include_router(api_router, prefix="/api/v1")
 
 
 if __name__ == "__main__":
+    logger.info("Приложение запускается...")
     run("main:app", reload=False, host="0.0.0.0", port=settings.APP_CONTAINER_PORT)

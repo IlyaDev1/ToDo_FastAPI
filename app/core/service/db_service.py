@@ -3,6 +3,7 @@ from inject import instance
 from app.core.dtos.task_dto import TaskDTO
 from app.core.entities.task_entity import TaskEntity
 from app.core.repositories.task_repository import TaskRepository
+from logger import logger
 
 
 class TaskService:
@@ -15,6 +16,7 @@ class TaskService:
 
     def get_task_by_id(self, id_value: int) -> TaskEntity | None:
         result = self.task_repo.get_task_by_id(id_value)
+        logger.info("Получение задачи по id")
         if result:
             return result
         return None
