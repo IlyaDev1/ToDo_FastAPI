@@ -1,7 +1,8 @@
-from app.core.repositories.task_repository import TaskRepository
 from inject import instance
-from app.core.entities.task_entity import TaskEntity
+
 from app.core.dtos.task_dto import TaskDTO
+from app.core.entities.task_entity import TaskEntity
+from app.core.repositories.task_repository import TaskRepository
 
 
 class TaskService:

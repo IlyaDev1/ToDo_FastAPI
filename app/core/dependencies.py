@@ -1,6 +1,8 @@
-from sqlalchemy.orm import Session
-from .database import database
 from contextlib import contextmanager
+
+from sqlalchemy.orm import Session
+
+from .database import database
 
 
 @contextmanager
