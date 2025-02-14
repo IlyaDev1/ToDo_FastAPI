@@ -21,3 +21,9 @@ class TaskService:
 
     def create_task(self, task: TaskDTO) -> TaskEntity:
         return self.task_repo.create_task(task)
+
+    def delete_task_by_id(self, task_id: int) -> TaskEntity | None:
+        result = self.task_repo.delete_task_by_id(task_id)
+        if result:
+            return result
+        return None

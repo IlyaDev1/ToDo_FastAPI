@@ -13,3 +13,6 @@ class TaskRepository(ABC):
 
     @abstractmethod
     def create_task(self, task: TaskDTO) -> TaskEntity: ...
+
+    @abstractmethod
+    def delete_task_by_id(self, id_value: int) -> TaskEntity | None: ...
