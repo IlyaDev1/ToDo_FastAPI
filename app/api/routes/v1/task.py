@@ -5,6 +5,7 @@ from inject import is_configured
 from app.api.schemas.task import TaskCreate
 from app.core.dtos.task_dto import TaskDTO
 from app.core.service.db_service import TaskService
+from logger import logger
 
 tasks_router = APIRouter()
 
@@ -31,6 +32,7 @@ def list_tasks():
 def get_task(task_id: int):
     task = tasks_service.get_task_by_id(task_id)
     if task is None:
+        logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
         return JSONResponse(
             content={"msg": "task with this ID does not exist"}, status_code=404
         )
@@ -47,6 +49,7 @@ def create_task(task_pydantic_instance: TaskCreate):
 def delete_task(task_id: int):
     task = tasks_service.delete_task_by_id(task_id)
     if task is None:
+        logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
         return JSONResponse(
             content={"msg": "task with this ID does not exist"}, status_code=404
         )

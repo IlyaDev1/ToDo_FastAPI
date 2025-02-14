@@ -12,6 +12,7 @@ services:
       - .env
     volumes:
       - ./alembic/versions:/todo/alembic/versions
+      - ./logs:/todo/logs
 
   db:
     image: postgres:16
