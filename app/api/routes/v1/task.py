@@ -61,7 +61,7 @@ def delete_task(task_id: int):
     summary="Изменить время дедлайна задачи",
 )
 def change_task_deadline(task_id: int, timing: ChangeDeadline):
-    new_timing = timing.timing_value
+    new_timing = timing.deadline
     response = tasks_service.change_task_deadline(task_id, new_timing)
     if response is None:
         logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
