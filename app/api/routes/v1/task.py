@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from inject import is_configured
 
-from app.api.schemas.task import TaskCreate
+from app.api.schemas.task import ChangeDeadline, TaskCreate
 from app.core.dtos.task_dto import TaskDTO
 from app.core.service.db_service import TaskService
 from logger import logger
@@ -54,3 +54,18 @@ def delete_task(task_id: int):
             content={"msg": "task with this ID does not exist"}, status_code=404
         )
     return task
+
+
+@tasks_router.patch(
+    "/rearrange/{task_id}",
+    summary="Изменить время дедлайна задачи",
+)
+def change_task_deadline(task_id: int, timing: ChangeDeadline):
+    new_timing = timing.timing_value
+    response = tasks_service.change_task_deadline(task_id, new_timing)
+    if response is None:
+        logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
+        return JSONResponse(
+            content={"msg": "task with this ID does not exist"}, status_code=404
+        )
+    return response

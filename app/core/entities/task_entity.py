@@ -10,3 +10,6 @@ class TaskEntity:
     is_completed: bool
     created_at: datetime
     deadline: datetime | None
+
+    def change_deadline(self, new_deadline: datetime) -> None:
+        self.deadline = new_deadline

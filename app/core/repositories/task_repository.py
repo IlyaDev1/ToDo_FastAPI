@@ -16,3 +16,6 @@ class TaskRepository(ABC):
 
     @abstractmethod
     def delete_task_by_id(self, id_value: int) -> TaskEntity | None: ...
+
+    @abstractmethod
+    def change_instance(self, task: TaskEntity) -> TaskEntity: ...
