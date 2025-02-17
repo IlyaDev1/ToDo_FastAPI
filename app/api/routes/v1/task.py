@@ -7,6 +7,8 @@ from app.core.dtos.task_dto import TaskDTO
 from app.core.service.db_service import TaskService
 from logger import logger
 
+from .responses import task_delete_response, task_not_found_response
+
 tasks_router = APIRouter()
 
 if is_configured():
@@ -65,29 +67,7 @@ def create_task(task_pydantic_instance: TaskCreate):
     summary="Удалить задачу по id",
     description="Удаляет задачу из БД по ее id: int",
     response_description="Данные удаленной задачи",
-    responses={
-        200: {
-            "description": "Задача успешно удалена",
-            "content": {
-                "application/json": {
-                    "example": {
-                        "id": 1,
-                        "title": "title",
-                        "description": "description",
-                        "deadline": "2023-12-31T23:59:59",
-                    }
-                }
-            },
-        },
-        404: {
-            "description": "Задача с таким id не существует",
-            "content": {
-                "application/json": {
-                    "example": {"msg": "task with this ID does not exist"}
-                }
-            },
-        },
-    },
+    responses={200: task_delete_response, 404: task_not_found_response},
 )
 def delete_task(task_id: int):
     task = tasks_service.delete_task_by_id(task_id)
