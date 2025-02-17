@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from inject import is_configured
@@ -60,9 +62,8 @@ def delete_task(task_id: int):
     "/rearrange/{task_id}",
     summary="Изменить время дедлайна задачи",
 )
-def change_task_deadline(task_id: int, timing: ChangeDeadline):
-    new_timing = timing.deadline
-    response = tasks_service.change_task_deadline(task_id, new_timing)
+def change_task_deadline(task_id: int, new_deadline: ChangeDeadline):
+    response = tasks_service.change_task_deadline(task_id, new_deadline.deadline)
     if response is None:
         logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
         return JSONResponse(
