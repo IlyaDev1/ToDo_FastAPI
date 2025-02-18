@@ -16,3 +16,13 @@ class TaskRepository(ABC):
 
     @abstractmethod
     def delete_task_by_id(self, id_value: int) -> TaskEntity | None: ...
+
+    @abstractmethod
+    def change_instance(self, task: TaskEntity) -> TaskEntity:
+        """Этот метод в моей голове должен делать следующее:
+        Если у нас есть энтити задачи, который мы как-то меняли, то объект
+        БД тоже надо поменять, поэтому этот метод это и делает, он принимает энтити,
+        по его id находит объект из БД, меняет все атрибуты объекта из БД на атрибуты
+        энтити и возвращает объект, переведенный из модели в entity
+        """
+        ...

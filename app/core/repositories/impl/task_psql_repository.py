@@ -53,3 +53,15 @@ class TaskPSQLRepository(TaskRepository):
             self.session_instance.commit()
             return task_entity_instance
         return None
+
+    def change_instance(self, task: TaskEntity) -> TaskEntity:
+        task_model_instance: TaskModel = self.session_instance.query(
+            self.model_class
+        ).get(task.id)
+        task_model_instance.title = task.title
+        task_model_instance.description = task.description
+        task_model_instance.is_completed = task.is_completed
+        task_model_instance.created_at = task.created_at
+        task_model_instance.deadline = task.deadline
+        self.session_instance.commit()
+        return map_task_model_to_entity(task_model_instance)

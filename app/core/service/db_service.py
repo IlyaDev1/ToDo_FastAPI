@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from inject import instance
 
 from app.core.dtos.task_dto import TaskDTO
@@ -29,3 +31,12 @@ class TaskService:
         if result:
             return result
         return None
+
+    def change_task_deadline(
+        self, task_id: int, deadline: datetime
+    ) -> TaskEntity | None:
+        current_task = self.task_repo.get_task_by_id(task_id)
+        if not current_task:
+            return None
+        current_task.change_deadline(deadline)
+        return self.task_repo.change_instance(current_task)
