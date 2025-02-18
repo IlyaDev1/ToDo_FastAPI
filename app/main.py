@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import FastAPI
 from inject import configure, is_configured
 from uvicorn import run
