@@ -25,11 +25,11 @@ class TaskPSQLRepository(TaskRepository):
         self.session_instance = session_instance
         self.model_class: Type[TaskModel] = TaskModel
 
-    def get_all_tasks(self) -> list[TaskEntity]:
+    async def get_all_tasks(self) -> list[TaskEntity]:
         tasks: list[TaskModel] = self.session_instance.query(self.model_class).all()
         return [map_task_model_to_entity(task) for task in tasks]
 
-    def get_task_by_id(self, id_value: int) -> TaskEntity | None:
+    async def get_task_by_id(self, id_value: int) -> TaskEntity | None:
         task: TaskModel | None = self.session_instance.query(self.model_class).get(
             id_value
         )
@@ -37,7 +37,7 @@ class TaskPSQLRepository(TaskRepository):
             return map_task_model_to_entity(task)
         return None
 
-    def create_task(self, task: TaskDTO) -> TaskEntity:
+    async def create_task(self, task: TaskDTO) -> TaskEntity:
         task = TaskModel(
             title=task.title, description=task.description, deadline=task.deadline
         )
@@ -45,8 +45,10 @@ class TaskPSQLRepository(TaskRepository):
         self.session_instance.commit()
         return map_task_model_to_entity(task)
 
-    def delete_task_by_id(self, id_value: int) -> TaskEntity | None:
-        task_instance = self.session_instance.query(self.model_class).get(id_value)
+    async def delete_task_by_id(self, id_value: int) -> TaskEntity | None:
+        task_instance = await self.session_instance.query(self.model_class).get(
+            id_value
+        )
         if task_instance:
             task_entity_instance = map_task_model_to_entity(task_instance)
             self.session_instance.delete(task_instance)
@@ -54,8 +56,8 @@ class TaskPSQLRepository(TaskRepository):
             return task_entity_instance
         return None
 
-    def change_instance(self, task: TaskEntity) -> TaskEntity:
-        task_model_instance: TaskModel = self.session_instance.query(
+    async def change_instance(self, task: TaskEntity) -> TaskEntity:
+        task_model_instance: TaskModel = await self.session_instance.query(
             self.model_class
         ).get(task.id)
         task_model_instance.title = task.title

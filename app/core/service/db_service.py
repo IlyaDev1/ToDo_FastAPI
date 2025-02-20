@@ -12,31 +12,31 @@ class TaskService:
     def __init__(self) -> None:
         self.task_repo = instance(TaskRepository)
 
-    def get_all_tasks(self) -> list[TaskEntity]:
-        tasks_dto = self.task_repo.get_all_tasks()
+    async def get_all_tasks(self) -> list[TaskEntity]:
+        tasks_dto = await self.task_repo.get_all_tasks()
         return tasks_dto
 
-    def get_task_by_id(self, id_value: int) -> TaskEntity | None:
-        result = self.task_repo.get_task_by_id(id_value)
+    async def get_task_by_id(self, id_value: int) -> TaskEntity | None:
+        result = await self.task_repo.get_task_by_id(id_value)
         logger.info("Получение задачи по id")
         if result:
             return result
         return None
 
-    def create_task(self, task: TaskDTO) -> TaskEntity:
-        return self.task_repo.create_task(task)
+    async def create_task(self, task: TaskDTO) -> TaskEntity:
+        return await self.task_repo.create_task(task)
 
-    def delete_task_by_id(self, task_id: int) -> TaskEntity | None:
-        result = self.task_repo.delete_task_by_id(task_id)
+    async def delete_task_by_id(self, task_id: int) -> TaskEntity | None:
+        result = await self.task_repo.delete_task_by_id(task_id)
         if result:
             return result
         return None
 
-    def change_task_deadline(
+    async def change_task_deadline(
         self, task_id: int, deadline: datetime
     ) -> TaskEntity | None:
-        current_task = self.task_repo.get_task_by_id(task_id)
+        current_task = await self.task_repo.get_task_by_id(task_id)
         if not current_task:
             return None
-        current_task.change_deadline(deadline)
-        return self.task_repo.change_instance(current_task)
+        await current_task.change_deadline(deadline)
+        return await self.task_repo.change_instance(current_task)
