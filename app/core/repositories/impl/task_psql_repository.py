@@ -52,7 +52,9 @@ class TaskPSQLRepository(TaskRepository):
 
     async def delete_task_by_id(self, id_value: int) -> TaskEntity | None:
         async with get_db() as session_instance:
-            task_instance = await session_instance.query(self.model_class).get(id_value)
+            stmt = select(self.model_class).where(self.model_class.id == id_value)
+            result = await session_instance.execute(stmt)
+            task_instance = result.scalar_one_or_none()
             if task_instance:
                 task_entity_instance = map_task_model_to_entity(task_instance)
                 await session_instance.delete(task_instance)
