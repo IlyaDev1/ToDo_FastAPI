@@ -18,7 +18,7 @@ class TaskRepository(ABC):
     async def delete_task_by_id(self, id_value: int) -> TaskEntity | None: ...
 
     @abstractmethod
-    async def change_instance(self, task: TaskEntity) -> TaskEntity:
+    async def change_instance(self, task: TaskEntity) -> TaskEntity | None:
         """Этот метод в моей голове должен делать следующее:
         Если у нас есть энтити задачи, который мы как-то меняли, то объект
         БД тоже надо поменять, поэтому этот метод это и делает, он принимает энтити,

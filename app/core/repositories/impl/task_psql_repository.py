@@ -1,5 +1,6 @@
 from typing import Type
 
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.core.dependencies import get_db
@@ -21,6 +22,14 @@ def map_task_model_to_entity(task_instance: TaskModel) -> TaskEntity:
     )
 
 
+async def get_task_by_id_or_none(
+    session_instance: AsyncSession, id_value: int
+) -> TaskModel | None:
+    stmt = select(TaskModel).where(TaskModel.id == id_value)
+    result = await session_instance.execute(stmt)
+    return result.scalar_one_or_none()
+
+
 class TaskPSQLRepository(TaskRepository):
     def __init__(self) -> None:
         self.model_class: Type[TaskModel] = TaskModel
@@ -34,9 +43,7 @@ class TaskPSQLRepository(TaskRepository):
 
     async def get_task_by_id(self, id_value: int) -> TaskEntity | None:
         async with get_db() as session_instance:
-            stmt = select(self.model_class).where(self.model_class.id == id_value)
-            result = await session_instance.execute(stmt)
-            task = result.scalar_one_or_none()
+            task = await get_task_by_id_or_none(session_instance, id_value)
             if task:
                 return map_task_model_to_entity(task)
             return None
@@ -54,9 +61,7 @@ class TaskPSQLRepository(TaskRepository):
 
     async def delete_task_by_id(self, id_value: int) -> TaskEntity | None:
         async with get_db() as session_instance:
-            stmt = select(self.model_class).where(self.model_class.id == id_value)
-            result = await session_instance.execute(stmt)
-            task_instance = result.scalar_one_or_none()
+            task_instance = await get_task_by_id_or_none(session_instance, id_value)
             if task_instance:
                 task_entity_instance = map_task_model_to_entity(task_instance)
                 await session_instance.delete(task_instance)
@@ -64,15 +69,17 @@ class TaskPSQLRepository(TaskRepository):
                 return task_entity_instance
             return None
 
-    async def change_instance(self, task: TaskEntity) -> TaskEntity:
+    async def change_instance(self, task: TaskEntity) -> TaskEntity | None:
         async with get_db() as session_instance:
-            stmt = select(self.model_class).where(self.model_class.id == task.id)
-            result = await session_instance.execute(stmt)
-            task_model_instance = result.scalar_one_or_none()
-            task_model_instance.title = task.title
-            task_model_instance.description = task.description
-            task_model_instance.is_completed = task.is_completed
-            task_model_instance.created_at = task.created_at
-            task_model_instance.deadline = task.deadline.replace(tzinfo=None)  # type: ignore
-            await session_instance.commit()
-            return map_task_model_to_entity(task_model_instance)
+            task_model_instance = await get_task_by_id_or_none(
+                session_instance, task.id
+            )
+            if task_model_instance:
+                task_model_instance.title = task.title
+                task_model_instance.description = task.description
+                task_model_instance.is_completed = task.is_completed
+                task_model_instance.created_at = task.created_at
+                task_model_instance.deadline = task.deadline.replace(tzinfo=None)  # type: ignore
+                await session_instance.commit()
+                return map_task_model_to_entity(task_model_instance)
+            return None
