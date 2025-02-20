@@ -64,9 +64,9 @@ class TaskPSQLRepository(TaskRepository):
 
     async def change_instance(self, task: TaskEntity) -> TaskEntity:
         async with get_db() as session_instance:
-            task_model_instance: TaskModel = await session_instance.query(
-                self.model_class
-            ).get(task.id)
+            stmt = select(self.model_class).where(self.model_class.id == task.id)
+            result = await session_instance.execute(stmt)
+            task_model_instance = result.scalar_one_or_none()
             task_model_instance.title = task.title
             task_model_instance.description = task.description
             task_model_instance.is_completed = task.is_completed
