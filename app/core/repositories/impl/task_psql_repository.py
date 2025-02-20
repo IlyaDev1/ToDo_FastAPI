@@ -1,5 +1,7 @@
 from typing import Type
 
+from sqlalchemy.future import select
+
 from app.core.dependencies import get_db
 from app.core.entities.task_entity import TaskEntity
 from app.core.models.task_model import TaskModel
@@ -25,9 +27,9 @@ class TaskPSQLRepository(TaskRepository):
 
     async def get_all_tasks(self) -> list[TaskEntity]:
         async with get_db() as session_instance:
-            tasks: list[TaskModel] = await session_instance.query(
-                self.model_class
-            ).all()
+            stmt = select(self.model_class)
+            result = await session_instance.execute(stmt)
+            tasks = result.scalars().all()
             return [map_task_model_to_entity(task) for task in tasks]
 
     async def get_task_by_id(self, id_value: int) -> TaskEntity | None:
