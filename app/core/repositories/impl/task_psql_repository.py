@@ -44,7 +44,9 @@ class TaskPSQLRepository(TaskRepository):
     async def create_task(self, task: TaskDTO) -> TaskEntity:
         async with get_db() as session_instance:
             task = TaskModel(
-                title=task.title, description=task.description, deadline=task.deadline
+                title=task.title,
+                description=task.description,
+                deadline=task.deadline.replace(tzinfo=None),  # type: ignore
             )
             session_instance.add(task)
             await session_instance.commit()
@@ -71,6 +73,6 @@ class TaskPSQLRepository(TaskRepository):
             task_model_instance.description = task.description
             task_model_instance.is_completed = task.is_completed
             task_model_instance.created_at = task.created_at
-            task_model_instance.deadline = task.deadline
+            task_model_instance.deadline = task.deadline.replace(tzinfo=None)  # type: ignore
             await session_instance.commit()
             return map_task_model_to_entity(task_model_instance)
