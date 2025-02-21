@@ -38,5 +38,5 @@ class TaskService:
         current_task = await self.task_repo.get_task_by_id(task_id)
         if not current_task:
             return None
-        await current_task.change_deadline(deadline)
+        current_task.change_deadline(deadline)
         return await self.task_repo.change_instance(current_task)
