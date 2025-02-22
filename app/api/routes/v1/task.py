@@ -33,8 +33,8 @@ def map_task_pydantic_to_dto(task_pydantic_instance: TaskCreate):
     description="Выводит json со списком всех задач, которые есть в БД",
     response_description="Данные задач",
 )
-def list_tasks():
-    return tasks_service.get_all_tasks()
+async def list_tasks():
+    return await tasks_service.get_all_tasks()
 
 
 @tasks_router.get(
@@ -43,8 +43,8 @@ def list_tasks():
     description="Выводит все данные задачи, находя ее по id: int",
     response_description="Данные задачи",
 )
-def get_task(task_id: int):
-    task = tasks_service.get_task_by_id(task_id)
+async def get_task(task_id: int):
+    task = await tasks_service.get_task_by_id(task_id)
     if task is None:
         logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
         return JSONResponse(
@@ -59,9 +59,9 @@ def get_task(task_id: int):
     description="Позволяет создать задачу в БД",
     response_description="Возвращает данные созданной задачи",
 )
-def create_task(task_pydantic_instance: TaskCreate):
+async def create_task(task_pydantic_instance: TaskCreate):
     task = map_task_pydantic_to_dto(task_pydantic_instance)
-    return tasks_service.create_task(task)
+    return await tasks_service.create_task(task)
 
 
 @tasks_router.delete(
@@ -71,8 +71,8 @@ def create_task(task_pydantic_instance: TaskCreate):
     response_description="Данные удаленной задачи",
     responses={200: task_delete_response, 404: task_not_found_response},
 )
-def delete_task(task_id: int):
-    task = tasks_service.delete_task_by_id(task_id)
+async def delete_task(task_id: int):
+    task = await tasks_service.delete_task_by_id(task_id)
     if task is None:
         logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
         return JSONResponse(
@@ -85,8 +85,8 @@ def delete_task(task_id: int):
     "/rearrange/{task_id}",
     summary="Изменить время дедлайна задачи",
 )
-def change_task_deadline(task_id: int, new_deadline: ChangeDeadline):
-    response = tasks_service.change_task_deadline(task_id, new_deadline.deadline)
+async def change_task_deadline(task_id: int, new_deadline: ChangeDeadline):
+    response = await tasks_service.change_task_deadline(task_id, new_deadline.deadline)
     if response is None:
         logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
         return JSONResponse(

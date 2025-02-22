@@ -1,17 +1,12 @@
-from contextlib import contextmanager
+from contextlib import asynccontextmanager
 
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import sessionmaker
 
-from .database import database
+from .database import SessionLocal
 
 
-@contextmanager
-def get_db() -> Session:
-    db = database.SessionLocal()
-    try:
+@asynccontextmanager
+async def get_db() -> AsyncSession:
+    async with SessionLocal() as db:
         yield db
-    except Exception:
-        db.rollback()
-        raise
-    finally:
-        db.close()
