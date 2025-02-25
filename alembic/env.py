@@ -17,7 +17,10 @@ if config.config_file_name is not None:
 
 target_metadata = Base.metadata
 
-database_url = getenv("SYNC_DATABASE_URL")
+if getenv("TEST_MODE") == "TRUE":
+    database_url = getenv("SYNC_TEST_DATABASE_URL")
+else:
+    database_url = getenv("SYNC_DATABASE_URL")
 config.set_main_option("sqlalchemy.url", database_url)
 
 
