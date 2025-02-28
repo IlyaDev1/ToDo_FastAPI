@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  test_db:
+    image: postgres:16
+    container_name: todo-test-db
+    ports:
+      - "${TEST_DB_HOST_PORT}:${DB_CONTAINER_PORT}"
+    env_file:
+      - .env

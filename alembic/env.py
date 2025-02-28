@@ -18,6 +18,7 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 database_url = getenv("SYNC_DATABASE_URL")
+
 config.set_main_option("sqlalchemy.url", database_url)
 
 
