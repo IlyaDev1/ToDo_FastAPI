@@ -13,8 +13,6 @@ load_dotenv()
 @pytest.fixture(scope="session", autouse=True)
 async def setup_db():
     assert os.getenv("MODE") == "TEST", "Ты берешь не тестовую БД"
-    for i in range(100):
-        print("test")
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
