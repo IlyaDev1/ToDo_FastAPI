@@ -51,7 +51,7 @@ jobs:
       - name: Ожидание PostgreSQL
         run: |
           for i in {1..10}; do
-            pg_isready -h postgres -p 5432 && echo "DB is ready" && exit 0
+            pg_isready -h localhost -p 5432 && echo "DB is ready" && exit 0
             echo "Waiting for DB..."
             sleep 3
           done
