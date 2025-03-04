@@ -1,0 +1,75 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      APP_NAME: "Task Management API"
+      API_V1_STR: "/api/v1"
+      ASYNC_DATABASE_URL: "postgresql+asyncpg://postgres:postgres@postgres:5432/postgres"
+      SYNC_DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/postgres"
+      DESCRIPTION: "API for managing tasks and users"
+      DEBUG: False
+      APP_HOST_PORT: 8080
+      MODE: TEST
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Установка PostgreSQL клиента
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Установка Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Кэширование зависимостей
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Обновление pip
+        run: pip install --upgrade pip
+
+      - name: Установка зависимостей
+        run: pip install -r requirements.txt
+
+      - name: Ожидание PostgreSQL
+        run: |
+          timeout 60 bash -c 'until pg_isready -h localhost -p 5432; do echo "."; sleep 1; done'
+          echo "PostgreSQL is ready"
+
+      - name: Применение миграций
+        run: alembic upgrade head
+
+      - name: Запуск тестов
+        run: pytest tests/test_api.py --disable-warnings
