@@ -18,6 +18,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
+          DB_HOST_PORT: 5432
         options: >-
           --health-cmd "pg_isready -U postgres -d postgres"
           --health-interval 10s
