@@ -28,7 +28,7 @@ jobs:
       APP_NAME: "Task Management API"
       API_V1_STR: "/api/v1"
       ASYNC_DATABASE_URL: "postgresql+asyncpg://postgres:postgres@postgres:5432/postgres"
-      SYNC_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+      SYNC_DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/postgres"
       DESCRIPTION: "API for managing tasks and users"
       DEBUG: False
       APP_HOST_PORT: 8080
@@ -55,21 +55,28 @@ jobs:
         run: pip install --upgrade pip
 
       - name: Установка зависимостей
-        run: pip install -r requirements.txt
+        run: pip install --no-cache-dir -r requirements.txt
 
       - name: Ожидание PostgreSQL
         run: |
-          for i in {1..10}; do
-            pg_isready -h postgres -p 5432 && echo "DB is ready" && exit 0
-            echo "Waiting for DB..."
-            sleep 3
+          echo "Ожидание PostgreSQL..."
+          for i in {1..30}; do
+            if PGPASSWORD=postgres psql -h postgres -U postgres -d postgres -c "SELECT 1" &> /dev/null; then
+              echo "PostgreSQL готов!"
+              exit 0
+            fi
+            echo "Ждём запуск базы данных..."
+            sleep 2
           done
-          echo "DB did not become available in time" && exit 1
+          echo "PostgreSQL не запустился вовремя!" && exit 1
 
       - name: Применение миграций
         env:
           SYNC_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+          PGHOST: postgres
         run: alembic upgrade head
 
       - name: Запуск тестов
-        run: pytest tests/test_api.py --disable-warnings
+        env:
+          PGHOST: postgres
+        run: pytest tests/test_api.py --disable-warnings -v
