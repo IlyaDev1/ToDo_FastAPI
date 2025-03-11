@@ -8,7 +8,7 @@ from app.main import app
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("setup_db")
-class APITests:
+class TestAPI:
     @pytest.fixture()
     async def async_client(self):
         """Возвращаем асинхронный клиент для асинхронных тестов"""
@@ -19,6 +19,5 @@ class APITests:
 
     async def test_service_is_alive(self, async_client):
         """Проверяем, что сервер запущен, отдает хоть что-то"""
-        async with self.async_client() as ac:
-            response = await ac.get("/api/v1/task/")
-            assert response.status_code == 200
+        response = await async_client.get("/api/v1/task/")
+        assert response.status_code == 200
