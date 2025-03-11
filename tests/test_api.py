@@ -19,6 +19,6 @@ class APITests:
 
     async def test_service_is_alive(self, async_client):
         """Проверяем, что сервер запущен, отдает хоть что-то"""
-        async with await self.async_client() as ac:
+        async with self.async_client() as ac:
             response = await ac.get("/api/v1/task/")
             assert response.status_code == 200
