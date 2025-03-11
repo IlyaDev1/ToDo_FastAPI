@@ -12,10 +12,9 @@ class TestAPI:
     @pytest.fixture()
     async def async_client(self):
         """Возвращаем асинхронный клиент для асинхронных тестов"""
-        async with AsyncClient(
-            transport=ASGITransport(app=app), base_url="http://test"
-        ) as ac:
-            yield ac
+        ac = AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
+        yield ac
+        await ac.aclose()
 
     async def test_service_is_alive(self, async_client):
         """Проверяем, что сервер запущен, отдает хоть что-то"""
