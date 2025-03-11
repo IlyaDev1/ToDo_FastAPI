@@ -9,12 +9,15 @@ from app.main import app
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("setup_db")
 class APITests:
-    @staticmethod
-    async def async_client():
+    @pytest.fixture()
+    async def async_client(self):
         """Возвращаем асинхронный клиент для асинхронных тестов"""
-        return AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
+        async with AsyncClient(
+            transport=ASGITransport(app=app), base_url="http://test"
+        ) as ac:
+            yield ac
 
-    async def test_service_is_alive(self):
+    async def test_service_is_alive(self, async_client):
         """Проверяем, что сервер запущен, отдает хоть что-то"""
         async with await self.async_client() as ac:
             response = await ac.get("/api/v1/task/")
