@@ -7,7 +7,6 @@ from app.main import app
 
 
 @pytest.mark.asyncio
-@pytest.mark.usefixtures("setup_db")
 class TestAPI:
     @pytest.fixture()
     async def get_async_client(self):
