@@ -6,6 +6,11 @@ from httpx import ASGITransport, AsyncClient
 from app.api.schemas.task import TaskCreate
 from app.main import app
 
+# @pytest.fixture(scope='package')
+# async def get_client_session():
+#     async with AsyncClient() as ac:
+#         return ac
+
 
 @pytest.mark.asyncio
 class TestCreateTaskAPI:
@@ -58,7 +63,7 @@ class TestCreateTaskAPI:
                 "description": "Task without deadline",
             }
             response = await ac.post("/api/v1/task/", json=task_data)
-            assert response.status_code == 200
+            assert response.status_code == 200  # не работает
             assert response.json()["title"] == task_data["title"]
 
     async def test_create_task_empty_body(self):
