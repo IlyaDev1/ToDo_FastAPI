@@ -7,4 +7,4 @@ services:
     ports:
       - "${TEST_DB_HOST_PORT}:${DB_CONTAINER_PORT}"
     env_file:
-      - .env
+      - .test.env
