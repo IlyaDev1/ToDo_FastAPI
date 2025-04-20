@@ -7,7 +7,7 @@ from app.main import app
 
 
 @pytest.mark.asyncio
-async def test_get_all_tasks(setup_db):
+async def test_get_all_tasks():
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     ) as ac:
