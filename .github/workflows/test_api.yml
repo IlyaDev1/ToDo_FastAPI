@@ -65,4 +65,4 @@ jobs:
       - name: Запуск тестов
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/postgres
-        run: pytest --disable-warnings
+        run: pytest -vv
