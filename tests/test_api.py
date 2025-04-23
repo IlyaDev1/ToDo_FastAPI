@@ -17,6 +17,7 @@ async def test_get_all_tasks(async_client):
 class TestCreateTask:
     """Класс тестов для создания задачи"""
 
+    @pytest.mark.asyncio
     async def test_create_task_with_empty_title(self, async_client):
         """Мы пытаемся создать задачу с пустым title полем, так делать нельзя по нашей бизнес-логике"""
         # Я ожидаю http ответ со статус кодом 422, потому что нужна в таком случае обработка на уровне парсинга данных pydantic(ом)
