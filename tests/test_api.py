@@ -8,7 +8,10 @@ from httpx import ASGITransport, AsyncClient
 from app.core.dtos.task_dto import TaskDTO
 from app.main import app
 
-task_url = "/api/v1/task/"
+task_url = "/api/v1/task/"  # Я делаю глобальную, потому что в будущем я буду разбивать test_api на разные модули
+# Когда будет больше сущностей
+# Для каждого эндпоинта - один модуль ->
+# в каждом модуле будет глобальная переменная для url эндпоинта своя
 
 
 @pytest.mark.asyncio
