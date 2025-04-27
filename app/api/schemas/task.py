@@ -7,7 +7,9 @@ class TaskCreate(BaseModel):
     title: str = Field(
         ..., max_length=60, min_length=1, description="Оглавление задачи"
     )
-    description: str | None = Field(None, description="Подробное описание задачи")
+    description: str | None = Field(
+        None, max_length=2000, description="Подробное описание задачи"
+    )
     deadline: datetime | None = Field(
         None, description="Время, до которого нужно сделать задачу"
     )
