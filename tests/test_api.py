@@ -1,8 +1,8 @@
-import os
-from dataclasses import asdict
-from datetime import datetime
+from copy import deepcopy
+from datetime import datetime, timedelta
 
 import pytest
+import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
 from app.core.dtos.task_dto import TaskDTO
@@ -12,6 +12,17 @@ task_url = "/api/v1/task/"  # Я делаю глобальную, потому �
 # Когда будет больше сущностей
 # Для каждого эндпоинта - один модуль ->
 # в каждом модуле будет глобальная переменная для url эндпоинта своя
+
+
+@pytest_asyncio.fixture(scope="function")
+async def task_for_create() -> TaskDTO:
+    return TaskDTO(
+        title="title",
+        description="description",
+        deadline=datetime.now() + timedelta(days=1),
+        is_completed=False,
+        created_at=datetime.now(),
+    )
 
 
 @pytest.mark.asyncio
@@ -27,47 +38,42 @@ class TestCreateTask:
     max_title_length = 60
 
     @pytest.mark.asyncio
-    async def test_create_task_with_empty_title(self, async_client: AsyncClient):
+    async def test_create_task_with_empty_title(
+        self, async_client: AsyncClient, task_for_create: TaskDTO
+    ):
         """Мы пытаемся создать задачу с пустым title полем, так делать нельзя по нашей бизнес-логике"""
         # Я ожидаю http ответ со статус кодом 422, потому что нужна в таком случае обработка на уровне парсинга данных pydantic(ом)
-        payload = TaskDTO(
-            title="",
-            description="description",
-            deadline=datetime(2025, 10, 10, 5, 1, 1),
-            is_completed=False,
-            created_at=None,
-        )
+
+        payload = deepcopy(task_for_create)
+        payload.title = ""
+
         response = await async_client.post(task_url, json=payload.to_json())
         assert response.status_code == 422
 
     @pytest.mark.asyncio
-    async def test_create_task_with_too_long_title(self, async_client: AsyncClient):
+    async def test_create_task_with_too_long_title(
+        self, async_client: AsyncClient, task_for_create: TaskDTO
+    ):
         """Мы пытаемся создать задачу с title больше 60, так нельзя по нашей бузинес-логике"""
         # Я ожидаю, что дропнется http со статус кодом 422, чтобы обработка была на уровне pydantic
 
         too_long_title = "a" * (TestCreateTask.max_title_length + 1)
-        payload = TaskDTO(
-            title=too_long_title,
-            description="description",
-            deadline=datetime(2025, 10, 10, 5, 1, 1),
-            is_completed=False,
-            created_at=None,
-        )
+        payload = deepcopy(task_for_create)
+        payload.title = too_long_title
+
         response = await async_client.post(task_url, json=payload.to_json())
         assert response.status_code == 422
 
     @pytest.mark.asyncio
-    async def test_create_task_with_60_title(self, async_client: AsyncClient):
+    async def test_create_task_with_60_title(
+        self, async_client: AsyncClient, task_for_create: TaskDTO
+    ):
         """Мы пытаемся создать задачу с title 60, так как это можно по нашей бузинес-логике (крайний случай)"""
         # Я ожидаю, что дропнется http со статус кодом 201
 
         extreme_title = "a" * TestCreateTask.max_title_length
-        payload = TaskDTO(
-            title=extreme_title,
-            description="description",
-            deadline=datetime(2025, 10, 10, 5, 1, 1),
-            is_completed=False,
-            created_at=None,
-        )
+        payload = deepcopy(task_for_create)
+        payload.title = extreme_title
+
         response = await async_client.post(task_url, json=payload.to_json())
         assert response.status_code == 201
