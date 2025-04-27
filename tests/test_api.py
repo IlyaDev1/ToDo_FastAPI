@@ -44,10 +44,9 @@ class TestCreateTask:
         """Мы пытаемся создать задачу с пустым title полем, так делать нельзя по нашей бизнес-логике"""
         # Я ожидаю http ответ со статус кодом 422, потому что нужна в таком случае обработка на уровне парсинга данных pydantic(ом)
 
-        payload = deepcopy(task_for_create)
-        payload.title = ""
+        task_for_create.title = ""
 
-        response = await async_client.post(task_url, json=payload.to_json())
+        response = await async_client.post(task_url, json=task_for_create.to_json())
         assert response.status_code == 422
 
     @pytest.mark.asyncio
@@ -58,10 +57,9 @@ class TestCreateTask:
         # Я ожидаю, что дропнется http со статус кодом 422, чтобы обработка была на уровне pydantic
 
         too_long_title = "a" * (TestCreateTask.max_title_length + 1)
-        payload = deepcopy(task_for_create)
-        payload.title = too_long_title
+        task_for_create.title = too_long_title
 
-        response = await async_client.post(task_url, json=payload.to_json())
+        response = await async_client.post(task_url, json=task_for_create.to_json())
         assert response.status_code == 422
 
     @pytest.mark.asyncio
@@ -72,8 +70,7 @@ class TestCreateTask:
         # Я ожидаю, что дропнется http со статус кодом 201
 
         extreme_title = "a" * TestCreateTask.max_title_length
-        payload = deepcopy(task_for_create)
-        payload.title = extreme_title
+        task_for_create.title = extreme_title
 
-        response = await async_client.post(task_url, json=payload.to_json())
+        response = await async_client.post(task_url, json=task_for_create.to_json())
         assert response.status_code == 201
