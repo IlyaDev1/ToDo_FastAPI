@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 from inject import is_configured
 
@@ -58,6 +58,7 @@ async def get_task(task_id: int):
     summary="Создать задачу",
     description="Позволяет создать задачу в БД",
     response_description="Возвращает данные созданной задачи",
+    status_code=status.HTTP_201_CREATED,
 )
 async def create_task(task_pydantic_instance: TaskCreate):
     task = map_task_pydantic_to_dto(task_pydantic_instance)
