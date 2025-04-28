@@ -17,8 +17,10 @@ class TaskCreate(BaseModel):
     @field_validator("deadline")
     @classmethod
     def deadline_must_be_in_future(cls, value: datetime):
-        if value is not None and value < datetime.now():
-            raise ValueError("Deadline must be in future")
+        if value is not None:
+            value = value.replace(tzinfo=None)
+            if value < datetime.now():
+                raise ValueError("Deadline must be in future")
         return value
 
 
