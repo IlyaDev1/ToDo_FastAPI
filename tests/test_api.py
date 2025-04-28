@@ -86,3 +86,14 @@ class TestCreateTask:
 
         response = await async_client.post(task_url, json=task_for_create.to_json())
         assert response.status_code == 201
+
+    @pytest.mark.asyncio
+    async def test_deadline_before_current_time(
+        self, async_client: AsyncClient, task_for_create: TaskDTO
+    ):
+        """Пытаюсь создать задачу с дедлайном раньше текущего времени, так не должно быть"""
+        # Ожидаю 422
+
+        task_for_create.deadline = datetime.now() - timedelta(days=1)
+        response = await async_client.post(task_url, json=task_for_create.to_json())
+        assert response.status_code == 422
