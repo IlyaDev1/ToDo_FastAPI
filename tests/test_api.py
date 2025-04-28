@@ -74,3 +74,15 @@ class TestCreateTask:
 
         response = await async_client.post(task_url, json=task_for_create.to_json())
         assert response.status_code == 201
+
+    @pytest.mark.asyncio
+    async def test_empty_deadline(
+        self, async_client: AsyncClient, task_for_create: TaskDTO
+    ):
+        """Пытаюсь создать задачу с deadline null, так должно быть можно"""
+        # Ожидаю 201
+
+        task_for_create.deadline = None
+
+        response = await async_client.post(task_url, json=task_for_create.to_json())
+        assert response.status_code == 201
