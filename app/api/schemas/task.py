@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from app.api.schemas.constants import MAX_DESCRIPTION_LENGTH, MAX_TITLE_LENGTH
 
@@ -15,6 +15,13 @@ class TaskCreate(BaseModel):
     deadline: datetime | None = Field(
         None, description="Время, до которого нужно сделать задачу"
     )
+
+    @field_validator("deadline")
+    @classmethod
+    def deadline_must_be_in_future(cls, value: datetime):
+        if value is not None and value < datetime.now():
+            raise ValueError("Deadline must be in future")
+        return value
 
 
 class ChangeDeadline(BaseModel):
