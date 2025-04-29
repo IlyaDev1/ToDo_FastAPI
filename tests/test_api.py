@@ -115,6 +115,7 @@ class TestChangeDeadline:
     """Класс посвящен тестам для ручки изменения дедлайна"""
 
     change_deadline_url = task_url + "rearrange/"
+    url = lambda task_id: f"{TestChangeDeadline.change_deadline_url}{task_id}"
 
     @pytest.mark.asyncio
     async def test_deadline_in_past(
@@ -127,7 +128,7 @@ class TestChangeDeadline:
 
         new_deadline: str = (datetime.now() - timedelta(days=1)).isoformat()
 
-        url = f"{TestChangeDeadline.change_deadline_url}{create_task_and_get_id}"
+        url = TestChangeDeadline.url(create_task_and_get_id)
         response = await async_client.patch(url, json={"deadline": new_deadline})
         assert response.status_code == 422
 
@@ -140,6 +141,6 @@ class TestChangeDeadline:
 
         new_deadline = None
 
-        url = f"{TestChangeDeadline.change_deadline_url}{create_task_and_get_id}"
+        url = TestChangeDeadline.url(create_task_and_get_id)
         response = await async_client.patch(url, json={"deadline": new_deadline})
         assert response.json()["deadline"] is None
