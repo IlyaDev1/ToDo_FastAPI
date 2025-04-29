@@ -25,6 +25,18 @@ async def task_for_create() -> TaskDTO:
     )
 
 
+@pytest_asyncio.fixture(scope="function")
+async def create_task_and_get_id(
+    async_client: AsyncClient, task_for_create: TaskDTO
+) -> str:
+    """Фикстура для создания новой задачи и отдача ее id"""
+
+    response = await async_client.post(task_url, json=task_for_create.to_json())
+    assert response.status_code == 201, "Проблема с созданием задачи"
+
+    return response.json()["id"]
+
+
 @pytest.mark.asyncio
 async def test_get_all_tasks(async_client: AsyncClient):
     """Это тест, который показывает, что система минимально работает"""
@@ -106,19 +118,16 @@ class TestChangeDeadline:
 
     @pytest.mark.asyncio
     async def test_deadline_in_past(
-        self, async_client: AsyncClient, task_for_create: TaskDTO
+        self,
+        async_client: AsyncClient,
+        task_for_create: TaskDTO,
+        create_task_and_get_id: str,
     ):
         """Пользователь хочет изменить дедлайн и ставит его в прошлое, так нельзя"""
         # Ожидаю 422
 
-        create_task_response = await async_client.post(
-            task_url, json=task_for_create.to_json()
-        )
-        assert create_task_response.status_code == 201, "Проблема с созданием задачи"
-        task_id = create_task_response.json()["id"]
-
         new_deadline: str = (datetime.now() - timedelta(days=1)).isoformat()
 
-        url = f"{TestChangeDeadline.change_deadline_url}{task_id}"
+        url = f"{TestChangeDeadline.change_deadline_url}{create_task_and_get_id}"
         response = await async_client.patch(url, json={"deadline": new_deadline})
         assert response.status_code == 422

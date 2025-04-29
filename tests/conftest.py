@@ -14,14 +14,15 @@ from app.main import app
 load_dotenv()
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def event_loop():
     loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     yield loop
     loop.close()
 
 
-@pytest_asyncio.fixture(scope="session", autouse=True)
+@pytest_asyncio.fixture(scope="session")
 async def setup_db():
     assert os.getenv("MODE") == "TEST", "Ты берешь не тестовую БД"
     async with engine.begin() as conn:
