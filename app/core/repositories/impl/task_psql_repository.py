@@ -77,12 +77,16 @@ class TaskPSQLRepository(TaskRepository):
             task_model_instance = await get_task_by_id_or_none(
                 session_instance, task.id
             )
+
+            if task.deadline:
+                task.deadline = task.deadline.replace(tzinfo=None)
+
             if task_model_instance:
                 task_model_instance.title = task.title
                 task_model_instance.description = task.description
                 task_model_instance.is_completed = task.is_completed
                 task_model_instance.created_at = task.created_at
-                task_model_instance.deadline = task.deadline.replace(tzinfo=None)  # type: ignore
+                task_model_instance.deadline = task.deadline  # type: ignore
                 await session_instance.commit()
                 return map_task_model_to_entity(task_model_instance)
             return None

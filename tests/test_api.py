@@ -120,7 +120,6 @@ class TestChangeDeadline:
     async def test_deadline_in_past(
         self,
         async_client: AsyncClient,
-        task_for_create: TaskDTO,
         create_task_and_get_id: str,
     ):
         """Пользователь хочет изменить дедлайн и ставит его в прошлое, так нельзя"""
@@ -131,3 +130,16 @@ class TestChangeDeadline:
         url = f"{TestChangeDeadline.change_deadline_url}{create_task_and_get_id}"
         response = await async_client.patch(url, json={"deadline": new_deadline})
         assert response.status_code == 422
+
+    @pytest.mark.asyncio
+    async def test_empty_deadline(
+        self, async_client: AsyncClient, create_task_and_get_id: str
+    ):
+        """Если пользователь ставит новый дедлайн в None, то ошибок не должно быть"""
+        # Ожидаю, что у задачи, deadline, действительно, None
+
+        new_deadline = None
+
+        url = f"{TestChangeDeadline.change_deadline_url}{create_task_and_get_id}"
+        response = await async_client.patch(url, json={"deadline": new_deadline})
+        assert response.json()["deadline"] is None
