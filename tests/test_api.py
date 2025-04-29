@@ -97,3 +97,28 @@ class TestCreateTask:
         task_for_create.deadline = datetime.now() - timedelta(days=1)
         response = await async_client.post(task_url, json=task_for_create.to_json())
         assert response.status_code == 422
+
+
+class TestChangeDeadline:
+    """Класс посвящен тестам для ручки изменения дедлайна"""
+
+    change_deadline_url = task_url + "rearrange/"
+
+    @pytest.mark.asyncio
+    async def test_deadline_in_past(
+        self, async_client: AsyncClient, task_for_create: TaskDTO
+    ):
+        """Пользователь хочет изменить дедлайн и ставит его в прошлое, так нельзя"""
+        # Ожидаю 422
+
+        create_task_response = await async_client.post(
+            task_url, json=task_for_create.to_json()
+        )
+        assert create_task_response.status_code == 201, "Проблема с созданием задачи"
+        task_id = create_task_response.json()["id"]
+
+        new_deadline: str = (datetime.now() - timedelta(days=1)).isoformat()
+
+        url = f"{TestChangeDeadline.change_deadline_url}{task_id}"
+        response = await async_client.patch(url, json={"deadline": new_deadline})
+        assert response.status_code == 422
