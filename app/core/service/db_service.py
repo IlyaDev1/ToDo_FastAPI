@@ -33,7 +33,7 @@ class TaskService:
         return None
 
     async def change_task_deadline(
-        self, task_id: int, deadline: datetime
+        self, task_id: int, deadline: datetime | None
     ) -> TaskEntity | None:
         current_task = await self.task_repo.get_task_by_id(task_id)
         if not current_task:
