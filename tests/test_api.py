@@ -145,3 +145,22 @@ class TestChangeDeadline:
         url = self.get_url_with_id(create_task_and_get_id)
         response = await async_client.patch(url, json={"deadline": new_deadline})
         assert response.json()["deadline"] is None
+
+
+class TestTaskCompleted:
+    """Здесь будут тесты для функций завершенности таски"""
+
+    @pytest.mark.asyncio
+    async def test_task_not_completed_after_creation(
+        self,
+        async_client: AsyncClient,
+        create_task_and_get_id,
+    ):
+        """Будет проверяться, что у задачи сразу после создания не может быть таска сразу выполнена"""
+
+        current_task_url = f"{task_url}{create_task_and_get_id}"
+
+        task_response = await async_client.get(current_task_url)
+
+        assert task_response.status_code == 200
+        assert not task_response.json()["is_completed"]
