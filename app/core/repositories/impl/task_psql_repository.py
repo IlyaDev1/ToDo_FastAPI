@@ -50,9 +50,6 @@ class TaskPSQLRepository(TaskRepository):
 
     async def create_task(self, task: TaskDTO) -> TaskEntity:
         async with get_db() as session_instance:
-            if task.deadline is not None:
-                task.deadline = task.deadline.replace(tzinfo=None)
-
             task_model = TaskModel(
                 title=task.title,
                 description=task.description,
@@ -77,10 +74,6 @@ class TaskPSQLRepository(TaskRepository):
             task_model_instance = await get_task_by_id_or_none(
                 session_instance, task.id
             )
-
-            if task.deadline:
-                task.deadline = task.deadline.replace(tzinfo=None)
-
             if task_model_instance:
                 task_model_instance.title = task.title
                 task_model_instance.description = task.description

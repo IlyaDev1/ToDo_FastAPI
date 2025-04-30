@@ -10,6 +10,10 @@ class TaskDTO:
     created_at: datetime | None
     deadline: datetime | None
 
+    def __post_init__(self):
+        if self.deadline:
+            self.deadline = self.deadline.replace(tzinfo=None)
+
     def to_json(self) -> dict:
         return {
             "title": self.title,
