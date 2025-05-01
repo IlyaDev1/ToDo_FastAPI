@@ -94,3 +94,10 @@ async def change_task_deadline(task_id: int, new_deadline: ChangeDeadline):
             content={"msg": "task with this ID does not exist"}, status_code=404
         )
     return response
+
+
+@tasks_router.patch(
+    "/completed/{task_id}",
+    summary="Отметить задачу как выполненную",
+)
+async def task_completed(task_id: str): ...
