@@ -31,7 +31,7 @@ def map_task_pydantic_to_dto(task_pydantic_instance: TaskCreate):
     )
 
 
-def entity_or_404(response: Any | None) -> Any | JSONResponse:
+def entity_or_404(response: Any | None) -> dict | JSONResponse:
     if response is None:
         logger.warning(f"Попытка доступа к несуществующей задаче")
         return JSONResponse(
