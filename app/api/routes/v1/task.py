@@ -1,15 +1,19 @@
 from datetime import datetime
+from typing import Any
 
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 from inject import is_configured
 
+from app.api.routes.v1.responses import (
+    task_delete_response,
+    task_mark_completed,
+    task_not_found_response,
+)
 from app.api.schemas.task import ChangeDeadline, TaskCreate
 from app.core.dtos.task_dto import TaskDTO
 from app.core.service.db_service import TaskService
 from logger import logger
-
-from .responses import task_delete_response, task_not_found_response
 
 tasks_router = APIRouter()
 
@@ -25,6 +29,15 @@ def map_task_pydantic_to_dto(task_pydantic_instance: TaskCreate):
         created_at=None,
         deadline=task_pydantic_instance.deadline,
     )
+
+
+def entity_or_404(response: Any | None) -> Any | JSONResponse:
+    if response is None:
+        logger.warning(f"Попытка доступа к несуществующей задаче")
+        return JSONResponse(
+            content={"msg": "task with this ID does not exist"}, status_code=404
+        )
+    return response
 
 
 @tasks_router.get(
@@ -45,12 +58,7 @@ async def list_tasks():
 )
 async def get_task(task_id: int):
     task = await tasks_service.get_task_by_id(task_id)
-    if task is None:
-        logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
-        return JSONResponse(
-            content={"msg": "task with this ID does not exist"}, status_code=404
-        )
-    return task
+    return entity_or_404(task)
 
 
 @tasks_router.post(
@@ -74,12 +82,7 @@ async def create_task(task_pydantic_instance: TaskCreate):
 )
 async def delete_task(task_id: int):
     task = await tasks_service.delete_task_by_id(task_id)
-    if task is None:
-        logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
-        return JSONResponse(
-            content={"msg": "task with this ID does not exist"}, status_code=404
-        )
-    return task
+    return entity_or_404(task)
 
 
 @tasks_router.patch(
@@ -88,16 +91,14 @@ async def delete_task(task_id: int):
 )
 async def change_task_deadline(task_id: int, new_deadline: ChangeDeadline):
     response = await tasks_service.change_task_deadline(task_id, new_deadline.deadline)
-    if response is None:
-        logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
-        return JSONResponse(
-            content={"msg": "task with this ID does not exist"}, status_code=404
-        )
-    return response
+    return entity_or_404(response)
 
 
 @tasks_router.patch(
     "/completed/{task_id}",
     summary="Отметить задачу как выполненную",
+    responses={200: task_mark_completed, 404: task_not_found_response},
 )
-async def task_completed(task_id: str): ...
+async def task_completed(task_id: str):
+    response = await tasks_service.mark_task_completed(task_id)  # type: ignore
+    return entity_or_404(response)

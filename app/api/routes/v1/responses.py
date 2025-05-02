@@ -20,3 +20,10 @@ task_not_found_response = {
         },
     },
 }
+
+task_mark_completed = {
+    "description": "Задача отмечена как выполненная",
+    "content": {
+        "application/json": {"example": {"msg": "task is marked as completed"}}
+    },
+}
