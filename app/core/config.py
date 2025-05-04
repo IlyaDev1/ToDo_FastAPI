@@ -11,6 +11,9 @@ class Settings:
     DATABASE_URL: str = getenv(
         "ASYNC_DATABASE_URL", "postgresql+async://postgres:postgres@db:5432/postgres"
     )
+    SYNC_DATABASE_URL: str = getenv(
+        "SYNC_DATABASE_URL", "postgresql://postgres:postgres@db:5432/postgres"
+    )
     DESCRIPTION: str = getenv("DESCRIPTION", "API for managing tasks and users")
     DEBUG: str = getenv("DEBUG", "false")
     APP_CONTAINER_PORT: int = int(getenv("APP_CONTAINER_PORT", "8085"))
