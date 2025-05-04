@@ -67,6 +67,7 @@ jobs:
       - name: Запуск API-тестов
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/postgres
+          SYNC_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
         run: pytest -vv tests/test_api.py
 
   all-tests:
@@ -127,4 +128,5 @@ jobs:
       - name: Запуск всех тестов
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/postgres
+          SYNC_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
         run: pytest -vv
