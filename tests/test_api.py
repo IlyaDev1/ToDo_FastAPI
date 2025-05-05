@@ -141,13 +141,13 @@ class TestTaskCompleted:
         assert task_response.status_code == 200
         assert not task_response.json()["is_completed"]
 
-    # @pytest.mark.asyncio
-    # async def test_task_completed(
-    #     self, async_client: AsyncClient, create_task_and_get_id: str
-    # ):
-    #     """Этот тест будет проверять, что после установки таски как выполненной, is_completed = True"""
-    #
-    #     endpoint_url = self.get_endpoint_url(create_task_and_get_id)
-    #
-    #     response = await async_client.patch(endpoint_url)
-    #     assert response.status_code == 200
+    @pytest.mark.asyncio
+    async def test_task_completed(
+        self, async_client: AsyncClient, create_task_and_get_id: str
+    ):
+        """Этот тест будет проверять, что после установки таски как выполненной, is_completed = True"""
+
+        endpoint_url = self.get_endpoint_url(create_task_and_get_id)
+
+        response = await async_client.patch(endpoint_url)
+        assert response.status_code == 200
