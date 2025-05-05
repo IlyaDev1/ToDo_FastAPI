@@ -59,8 +59,6 @@ async def create_task_and_get_id(
     response = await async_client.post(TASK_URL, json=task_for_create.to_json())
     assert response.status_code == 201, "Проблема с созданием задачи"
 
-    res = await async_client.get(TASK_URL)
-
     return response.json()["id"]
 
 
