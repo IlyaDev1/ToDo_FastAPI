@@ -40,3 +40,5 @@ class TaskService:
             return None
         current_task.change_deadline(deadline)
         return await self.task_repo.change_instance(current_task)
+
+    async def mark_task_completed(self, task_id: int | str) -> TaskEntity | None: ...
