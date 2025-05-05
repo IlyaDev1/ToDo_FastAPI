@@ -41,4 +41,11 @@ class TaskService:
         current_task.change_deadline(deadline)
         return await self.task_repo.change_instance(current_task)
 
-    async def mark_task_completed(self, task_id: int | str) -> TaskEntity | None: ...
+    async def mark_task_completed(self, task_id: int | str) -> TaskEntity | None:
+        """Метод, позволяющий отметить таску выполненной"""
+
+        current_task: TaskEntity | None = await self.task_repo.get_task_by_id(task_id)
+        if not current_task:
+            return None
+        current_task.mark_task_completed()  # type: ignore
+        return await self.task_repo.change_instance(current_task)
