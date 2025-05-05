@@ -30,8 +30,6 @@ def event_loop():
 def setup_db_sync():
     assert os.getenv("MODE") == "TEST", "Ты используешь не тестовую БД"
 
-    task_repo = TaskPSQLRepository()
-
     with sync_engine.begin() as conn:
         Base.metadata.drop_all(bind=conn)
         Base.metadata.create_all(bind=conn)
