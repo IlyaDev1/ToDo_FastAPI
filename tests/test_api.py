@@ -136,8 +136,6 @@ class TestTaskCompleted:
 
         task_response = await async_client.get(current_TASK_URL)
 
-        res = await async_client.get(TASK_URL)
-
         assert task_response.status_code == 200
         assert not task_response.json()["is_completed"]
 
