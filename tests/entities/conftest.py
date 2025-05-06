@@ -6,7 +6,7 @@ from app.core.entities.task_entity import TaskEntity
 
 
 @pytest.fixture(scope="function")
-def task_entity_instance():
+def task_entity_instance() -> TaskEntity:
     """Фикстура должна отдать сущность задачи"""
 
     return TaskEntity(
