@@ -13,3 +13,6 @@ class TaskEntity:
 
     def change_deadline(self, new_deadline: datetime) -> None:
         self.deadline = new_deadline
+
+    def mark_task_completed(self) -> None:
+        self.is_completed = True
