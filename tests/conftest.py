@@ -51,13 +51,13 @@ async def async_client():
 @pytest_asyncio.fixture(scope="function")
 async def create_task_and_get_id(
     async_client: AsyncClient, task_for_create: TaskDTO
-) -> str:
+) -> int:
     """Фикстура для создания новой задачи и отдача ее id"""
 
     response = await async_client.post(TASK_URL, json=task_for_create.to_json())
     assert response.status_code == 201, "Проблема с созданием задачи"
 
-    return response.json()["id"]
+    return int(response.json()["id"])
 
 
 @pytest_asyncio.fixture(scope="function")

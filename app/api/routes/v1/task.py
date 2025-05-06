@@ -99,6 +99,6 @@ async def change_task_deadline(task_id: int, new_deadline: ChangeDeadline):
     summary="Отметить задачу как выполненную",
     responses={200: task_mark_completed, 404: task_not_found_response},
 )
-async def task_completed(task_id: str):
+async def task_completed(task_id: int):
     response = await tasks_service.mark_task_completed(task_id)  # type: ignore
     return entity_or_404(response)
