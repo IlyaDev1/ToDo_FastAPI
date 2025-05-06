@@ -20,7 +20,7 @@ class TestTaskCompletedService:
     async def test_task_completed(
         self,
         task_service: TaskService,
-        create_task_and_get_id: str,
+        create_task_and_get_id: int,
     ):
         """Это тест на то, что сервис возвращает entity задачи с is_completed=True"""
 

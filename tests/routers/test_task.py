@@ -9,7 +9,7 @@ class TestTaskCompleted:
     """Тесты для ручки, которая отмечает задачу выполненной"""
 
     @pytest.mark.asyncio
-    async def test_task_completed(self, create_task_and_get_id: str):
+    async def test_task_completed(self, create_task_and_get_id: int):
         """Этот интеграционных тест проверяет, что роутер имеет такую функцию"""
 
         response: TaskEntity = await task_completed(create_task_and_get_id)
