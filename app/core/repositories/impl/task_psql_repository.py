@@ -56,7 +56,7 @@ class TaskPSQLRepository(TaskRepository):
             task_model = TaskModel(
                 title=task.title,
                 description=task.description,
-                deadline=task.deadline,  # type: ignore
+                deadline=task.deadline,
             )
             session_instance.add(task_model)
             await session_instance.commit()
