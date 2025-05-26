@@ -47,8 +47,6 @@ class TaskService:
     @staticmethod
     def is_deadline_before_current_time(deadline: datetime):
         """Метод проверяет, что дедлайн не стоит в прошлом"""
-        if deadline is None:
-            return
         current_time = datetime.now()
         if deadline < current_time:
             raise ValueError("deadline must be in future")
