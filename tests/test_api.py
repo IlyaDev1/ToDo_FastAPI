@@ -7,7 +7,7 @@ from httpx import ASGITransport, AsyncClient
 
 from app.core.dtos.task_dto import TaskDTO
 from app.main import app
-from tests.constants import TASK_DTO_INSTANCE, TASK_URL
+from tests.constants import CURRENT_TIMESTAMP, TASK_DTO_INSTANCE, TASK_URL
 
 
 @pytest.mark.asyncio
@@ -61,3 +61,25 @@ class TestCreateTask:
 
         response = await async_client.post(TASK_URL, json=task_instance.to_json())
         assert response.status_code == 201
+
+    @pytest.mark.asyncio
+    async def test_empty_deadline(self, async_client: AsyncClient):
+        """Пытаюсь создать задачу с deadline null, так должно быть можно"""
+        # Ожидаю 201
+
+        task_instance: TaskDTO = deepcopy(TASK_DTO_INSTANCE)
+        task_instance.deadline = None
+
+        response = await async_client.post(TASK_URL, json=task_instance.to_json())
+        assert response.status_code == 201
+
+    @pytest.mark.asyncio
+    async def test_deadline_before_current_time(self, async_client: AsyncClient):
+        """Пытаюсь создать задачу с дедлайном раньше текущего времени, так не должно быть"""
+        # Ожидаю 400
+
+        task_instance = deepcopy(TASK_DTO_INSTANCE)
+        task_instance.deadline = CURRENT_TIMESTAMP - timedelta(days=1)
+
+        response = await async_client.post(TASK_URL, json=task_instance.to_json())
+        assert response.status_code == 400

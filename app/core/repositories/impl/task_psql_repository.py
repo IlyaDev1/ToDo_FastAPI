@@ -50,14 +50,17 @@ class TaskPSQLRepository(TaskRepository):
 
     async def create_task(self, task: TaskDTO) -> TaskEntity:
         async with get_db() as session_instance:
-            task = TaskModel(
+            if task.deadline is not None:
+                task.deadline = task.deadline.replace(tzinfo=None)
+
+            task_model = TaskModel(
                 title=task.title,
                 description=task.description,
-                deadline=task.deadline.replace(tzinfo=None),  # type: ignore
+                deadline=task.deadline,
             )
-            session_instance.add(task)
+            session_instance.add(task_model)
             await session_instance.commit()
-            return map_task_model_to_entity(task)
+            return map_task_model_to_entity(task_model)
 
     async def delete_task_by_id(self, id_value: int) -> TaskEntity | None:
         async with get_db() as session_instance:

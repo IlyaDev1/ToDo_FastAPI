@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import JSONResponse
 from inject import is_configured
 
@@ -61,8 +61,11 @@ async def get_task(task_id: int):
     status_code=status.HTTP_201_CREATED,
 )
 async def create_task(task_pydantic_instance: TaskCreate):
-    task = map_task_pydantic_to_dto(task_pydantic_instance)
-    return await tasks_service.create_task(task)
+    try:
+        task = map_task_pydantic_to_dto(task_pydantic_instance)
+        return await tasks_service.create_task(task)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @tasks_router.delete(
