@@ -26,7 +26,7 @@ class TaskService:
     async def create_task(self, task: TaskDTO) -> TaskEntity:
         if task.deadline is not None:
             task.deadline = task.deadline.replace(tzinfo=None)
-            self.is_deadline_before_current_time(task.deadline)
+            self.raise_if_deadline_in_past(task.deadline)
         return await self.task_repo.create_task(task)
 
     async def delete_task_by_id(self, task_id: int) -> TaskEntity | None:
@@ -41,11 +41,16 @@ class TaskService:
         current_task = await self.task_repo.get_task_by_id(task_id)
         if not current_task:
             return None
+
+        if deadline is not None:
+            deadline = deadline.replace(tzinfo=None)
+            self.raise_if_deadline_in_past(deadline)
+
         current_task.change_deadline(deadline)
         return await self.task_repo.change_instance(current_task)
 
     @staticmethod
-    def is_deadline_before_current_time(deadline: datetime):
+    def raise_if_deadline_in_past(deadline: datetime):
         """Метод проверяет, что дедлайн не стоит в прошлом"""
         current_time = datetime.now()
         if deadline < current_time:

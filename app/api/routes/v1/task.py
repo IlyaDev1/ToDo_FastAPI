@@ -90,10 +90,15 @@ async def delete_task(task_id: int):
     summary="Изменить время дедлайна задачи",
 )
 async def change_task_deadline(task_id: int, new_deadline: ChangeDeadline):
-    response = await tasks_service.change_task_deadline(task_id, new_deadline.deadline)
-    if response is None:
-        logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
-        return JSONResponse(
-            content={"msg": "task with this ID does not exist"}, status_code=404
+    try:
+        response = await tasks_service.change_task_deadline(
+            task_id, new_deadline.deadline
         )
-    return response
+        if response is None:
+            logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
+            return JSONResponse(
+                content={"msg": "task with this ID does not exist"}, status_code=404
+            )
+        return response
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
