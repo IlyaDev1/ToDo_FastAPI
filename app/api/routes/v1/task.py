@@ -6,6 +6,8 @@ from inject import is_configured
 
 from app.api.schemas.task import ChangeDeadline, TaskCreate
 from app.core.dtos.task_dto import TaskDTO
+from app.core.entities.task_entity import TaskEntity
+from app.core.exceptions.task_exceptions import DeadlineInPastError
 from app.core.service.db_service import TaskService
 from logger import logger
 
@@ -27,13 +29,21 @@ def map_task_pydantic_to_dto(task_pydantic_instance: TaskCreate):
     )
 
 
+def not_found_or_entity(instance: TaskEntity | None) -> TaskEntity:
+    """Return the entity or raise 404 if it is None."""
+    if instance is None:
+        logger.info(f"Попытка доступа к несуществующей сущности")
+        raise HTTPException(status_code=404, detail=task_not_found_response)
+    return instance
+
+
 @tasks_router.get(
     "/",
     summary="Вывести список всех задач пользователя",
     description="Выводит json со списком всех задач, которые есть в БД",
     response_description="Данные задач",
 )
-async def list_tasks():
+async def list_tasks() -> list[TaskEntity]:
     return await tasks_service.get_all_tasks()
 
 
@@ -43,14 +53,9 @@ async def list_tasks():
     description="Выводит все данные задачи, находя ее по id: int",
     response_description="Данные задачи",
 )
-async def get_task(task_id: int):
-    task = await tasks_service.get_task_by_id(task_id)
-    if task is None:
-        logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
-        return JSONResponse(
-            content={"msg": "task with this ID does not exist"}, status_code=404
-        )
-    return task
+async def get_task(task_id: int) -> TaskEntity:
+    task: TaskEntity | None = await tasks_service.get_task_by_id(task_id)
+    return not_found_or_entity(task)
 
 
 @tasks_router.post(
@@ -64,7 +69,7 @@ async def create_task(task_pydantic_instance: TaskCreate):
     try:
         task = map_task_pydantic_to_dto(task_pydantic_instance)
         return await tasks_service.create_task(task)
-    except ValueError as e:
+    except DeadlineInPastError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
@@ -75,25 +80,22 @@ async def create_task(task_pydantic_instance: TaskCreate):
     response_description="Данные удаленной задачи",
     responses={200: task_delete_response, 404: task_not_found_response},
 )
-async def delete_task(task_id: int):
-    task = await tasks_service.delete_task_by_id(task_id)
-    if task is None:
-        logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
-        return JSONResponse(
-            content={"msg": "task with this ID does not exist"}, status_code=404
-        )
-    return task
+async def delete_task(task_id: int) -> TaskEntity:
+    task: TaskEntity | None = await tasks_service.delete_task_by_id(task_id)
+    return not_found_or_entity(task)
 
 
 @tasks_router.patch(
     "/rearrange/{task_id}",
     summary="Изменить время дедлайна задачи",
 )
-async def change_task_deadline(task_id: int, new_deadline: ChangeDeadline):
-    response = await tasks_service.change_task_deadline(task_id, new_deadline.deadline)
-    if response is None:
-        logger.warning(f"Попытка доступа к несуществующей задаче ID {task_id}")
-        return JSONResponse(
-            content={"msg": "task with this ID does not exist"}, status_code=404
+async def change_task_deadline(
+    task_id: int, new_deadline: ChangeDeadline
+) -> TaskEntity:
+    try:
+        response: TaskEntity | None = await tasks_service.change_task_deadline(
+            task_id, new_deadline.deadline
         )
-    return response
+        return not_found_or_entity(response)
+    except DeadlineInPastError as e:
+        raise HTTPException(status_code=400, detail=str(e))
