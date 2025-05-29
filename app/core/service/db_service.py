@@ -4,6 +4,7 @@ from inject import instance
 
 from app.core.dtos.task_dto import TaskDTO
 from app.core.entities.task_entity import TaskEntity
+from app.core.exceptions.task_exceptions import DeadlineInPastError
 from app.core.repositories.task_repository import TaskRepository
 from logger import logger
 
@@ -50,8 +51,9 @@ class TaskService:
         return await self.task_repo.change_instance(current_task)
 
     @staticmethod
-    def raise_if_deadline_in_past(deadline: datetime):
+    def raise_if_deadline_in_past(deadline: datetime) -> None:
         """Метод проверяет, что дедлайн не стоит в прошлом"""
+
         current_time = datetime.now()
         if deadline < current_time:
-            raise ValueError("deadline must be in future")
+            raise DeadlineInPastError("Deadline must be in future")
