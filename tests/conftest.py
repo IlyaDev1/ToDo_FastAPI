@@ -6,7 +6,7 @@ import pytest_asyncio
 from dotenv import load_dotenv
 from httpx import ASGITransport, AsyncClient
 
-from app.core.database import engine
+from app.core.database import engine, sync_engine
 from app.core.models.base import Base
 from app.core.models.task_model import TaskModel
 from app.main import app
@@ -22,17 +22,18 @@ def event_loop():
     loop.close()
 
 
-@pytest_asyncio.fixture(scope="session")
-async def setup_db():
-    assert os.getenv("MODE") == "TEST", "Ты берешь не тестовую БД"
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+@pytest.fixture(scope="session", autouse=True)
+def setup_db_sync():
+    assert os.getenv("MODE") == "TEST", "Ты используешь не тестовую БД"
+
+    with sync_engine.begin() as conn:
+        Base.metadata.drop_all(bind=conn)
+        Base.metadata.create_all(bind=conn)
 
     yield
 
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+    with sync_engine.begin() as conn:
+        Base.metadata.drop_all(bind=conn)
 
 
 @pytest_asyncio.fixture(scope="session")
