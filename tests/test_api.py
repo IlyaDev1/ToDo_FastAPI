@@ -15,6 +15,17 @@ from tests.constants import (
 )
 
 
+@pytest_asyncio.fixture(scope="function")
+async def create_task_and_get_id(
+    async_client: AsyncClient,
+) -> int:
+    """Create a new task in the database and return its ID."""
+    response = await async_client.post(TASK_URL, json=TASK_DTO_INSTANCE.to_json())
+    assert response.status_code == 201, "Проблема с созданием задачи"
+
+    return int(response.json()["id"])
+
+
 @pytest.mark.asyncio
 async def test_get_all_tasks(async_client: AsyncClient):
     """Это тест, который показывает, что система минимально работает"""
@@ -93,6 +104,11 @@ class TestCreateTask:
 class TestChangeDeadline:
     """Класс посвящен тестам для ручки изменения дедлайна"""
 
+    @staticmethod
+    def get_url_with_id(task_id: int) -> str:
+        """Return the endpoint URL for changing a task's deadline by task ID."""
+        return f"{CHANGE_DEADLINE_URL}{task_id}"
+
     @pytest.mark.asyncio
     async def test_deadline_in_past(self, async_client: AsyncClient):
         """Пользователь хочет изменить дедлайн и ставит его в прошлое, так нельзя"""
@@ -112,3 +128,16 @@ class TestChangeDeadline:
         url = f"{CHANGE_DEADLINE_URL}{task_id}"
         response = await async_client.patch(url, json={"deadline": new_deadline})
         assert response.status_code == 400
+
+    @pytest.mark.asyncio
+    async def test_empty_deadline(
+        self, async_client: AsyncClient, create_task_and_get_id: int
+    ):
+        """Test changing a deadline to None.
+
+        If the user provides a None deadline, the task's deadline should be set to None.
+        """
+        new_deadline = None
+        url: str = self.get_url_with_id(create_task_and_get_id)
+        response = await async_client.patch(url, json={"deadline": new_deadline})
+        assert response.json()["deadline"] is None
