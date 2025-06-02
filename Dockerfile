@@ -2,9 +2,11 @@ FROM python:3.10-slim
 
 WORKDIR /todo
 
+RUN pip install --no-cache-dir uv
+
 COPY requirements.txt /todo/
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN uv pip install -r requirements.txt --system
 
 COPY . /todo/
 
