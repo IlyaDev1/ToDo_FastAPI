@@ -141,3 +141,18 @@ class TestChangeDeadline:
         url: str = self.get_url_with_id(create_task_and_get_id)
         response = await async_client.patch(url, json={"deadline": new_deadline})
         assert response.json()["deadline"] is None
+
+
+class TestTaskCompleted:
+    """Mark task as completed endpoint tests."""
+
+    @pytest.mark.asyncio
+    async def test_mark_task_completed(
+        self, async_client: AsyncClient, create_task_and_get_id: int
+    ):
+        """Newly created task should have is_completed set to False by default."""
+
+        task_id: int = create_task_and_get_id
+        url: str = f"{TASK_URL}{task_id}"
+        response = await async_client.get(url)
+        assert response.json()["is_completed"] is False
