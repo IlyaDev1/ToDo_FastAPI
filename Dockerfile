@@ -1,10 +1,12 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 WORKDIR /todo
 
-COPY requirements.txt /todo/
+RUN pip install --no-cache-dir uv
 
-RUN pip install --no-cache-dir -r requirements.txt
+COPY uv.lock pyproject.toml /todo/
+
+RUN uv sync --frozen --no-cache
 
 COPY . /todo/
 
@@ -12,4 +14,4 @@ ENV PYTHONWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/todo
 
-CMD alembic upgrade head && python app/main.py
+CMD uv run alembic upgrade head && uv run python app/main.py
