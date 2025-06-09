@@ -45,7 +45,7 @@ jobs:
         run: pip install uv
 
       - name: Sync dependencies
-        run: uv pip sync --system --no-cache
+        run: uv sync --frozen --no-cache
 
       - name: Wait for PostgreSQL
         run: |
@@ -103,7 +103,7 @@ jobs:
         run: pip install uv
 
       - name: Sync dependencies
-        run: uv pip sync --system --no-cache
+        run: uv sync --frozen --no-cache
 
       - name: Wait for PostgreSQL
         run: |
