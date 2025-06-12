@@ -975,6 +975,11 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+ci = [
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-dotenv" },
+]
 dev = [
     { name = "astroid" },
     { name = "black" },
@@ -1049,8 +1054,11 @@ requires-dist = [
     { name = "pyflakes", marker = "extra == 'dev'", specifier = "==3.2.0" },
     { name = "pygments", specifier = "==2.18.0" },
     { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.4" },
+    { name = "pytest", marker = "extra == 'ci'", specifier = "==8.3.4" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==8.3.4" },
+    { name = "pytest-asyncio", marker = "extra == 'ci'", specifier = "==0.25.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = "==0.25.3" },
+    { name = "pytest-dotenv", marker = "extra == 'ci'", specifier = "==0.5.2" },
     { name = "pytest-dotenv", marker = "extra == 'dev'", specifier = "==0.5.2" },
     { name = "python-dotenv", specifier = "==1.0.1" },
     { name = "python-multipart", specifier = "==0.0.20" },
@@ -1072,7 +1080,7 @@ requires-dist = [
     { name = "watchfiles", specifier = "==1.0.3" },
     { name = "websockets", specifier = "==14.1" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "ci"]
 
 [[package]]
 name = "tomlkit"
