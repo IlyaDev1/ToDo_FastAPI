@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: todo-app
+    ports:
+      - "${APP_HOST_PORT}:${APP_CONTAINER_PORT}"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - ./alembic/versions:/todo/alembic/versions
+      - ./logs:/todo/logs
+
+  db:
+    image: postgres:16
+    container_name: todo-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_HOST_PORT}:${DB_CONTAINER_PORT}"
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
