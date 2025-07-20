@@ -99,3 +99,9 @@ async def change_task_deadline(
         return not_found_or_entity(response)
     except DeadlineInPastError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@tasks_router.patch("/mark_completed/{task_id}", summary="Отметить таску выполненной")
+async def mark_task_completed(task_id: int) -> TaskEntity:
+    response: TaskEntity | None = await tasks_service.mark_task_completed(task_id)  # type: ignore
+    return not_found_or_entity(response)
