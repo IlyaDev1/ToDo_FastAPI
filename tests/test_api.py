@@ -10,6 +10,7 @@ from app.main import app
 from tests.constants import (
     CHANGE_DEADLINE_URL,
     CURRENT_TIMESTAMP,
+    MARK_TASK_COMPLETED_URL,
     TASK_DTO_INSTANCE,
     TASK_URL,
 )
@@ -147,7 +148,7 @@ class TestTaskCompleted:
     """Mark task as completed endpoint tests."""
 
     @pytest.mark.asyncio
-    async def test_mark_task_completed(
+    async def test_task_not_completed_by_default(
         self, async_client: AsyncClient, create_task_and_get_id: int
     ):
         """Newly created task should have is_completed set to False by default."""
@@ -156,3 +157,16 @@ class TestTaskCompleted:
         url: str = f"{TASK_URL}{task_id}"
         response = await async_client.get(url)
         assert response.json()["is_completed"] is False
+
+    @pytest.mark.asyncio
+    async def test_mark_task_completed(
+        self,
+        async_client: AsyncClient,
+        create_task_and_get_id: int,
+    ):
+        """Task is_completed True after request"""
+
+        task_id: int = create_task_and_get_id
+        url: str = f"{MARK_TASK_COMPLETED_URL}{task_id}"
+        response = await async_client.patch(url)
+        assert response.json()["is_completed"] is True
