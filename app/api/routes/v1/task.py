@@ -29,7 +29,7 @@ def map_task_pydantic_to_dto(task_pydantic_instance: TaskCreate):
     )
 
 
-def not_found_or_entity(instance: TaskEntity | None) -> TaskEntity:
+def get_task_or_404_if_not_exist(instance: TaskEntity | None) -> TaskEntity:
     """Return the entity or raise 404 if it is None."""
     if instance is None:
         logger.info(f"Попытка доступа к несуществующей сущности")
@@ -55,7 +55,7 @@ async def list_tasks() -> list[TaskEntity]:
 )
 async def get_task(task_id: int) -> TaskEntity:
     task: TaskEntity | None = await tasks_service.get_task_by_id(task_id)
-    return not_found_or_entity(task)
+    return get_task_or_404_if_not_exist(task)
 
 
 @tasks_router.post(
@@ -82,7 +82,7 @@ async def create_task(task_pydantic_instance: TaskCreate):
 )
 async def delete_task(task_id: int) -> TaskEntity:
     task: TaskEntity | None = await tasks_service.delete_task_by_id(task_id)
-    return not_found_or_entity(task)
+    return get_task_or_404_if_not_exist(task)
 
 
 @tasks_router.patch(
@@ -96,7 +96,7 @@ async def change_task_deadline(
         response: TaskEntity | None = await tasks_service.change_task_deadline(
             task_id, new_deadline.deadline
         )
-        return not_found_or_entity(response)
+        return get_task_or_404_if_not_exist(response)
     except DeadlineInPastError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -104,4 +104,4 @@ async def change_task_deadline(
 @tasks_router.patch("/mark_completed/{task_id}", summary="Отметить таску выполненной")
 async def mark_task_completed(task_id: int) -> TaskEntity:
     response: TaskEntity | None = await tasks_service.mark_task_completed(task_id)  # type: ignore
-    return not_found_or_entity(response)
+    return get_task_or_404_if_not_exist(response)
