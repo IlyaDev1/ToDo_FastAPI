@@ -50,6 +50,16 @@ class TaskService:
         current_task.change_deadline(deadline)
         return await self.task_repo.change_instance(current_task)
 
+    async def mark_task_completed(self, task_id: int) -> TaskEntity | None:
+        """Отметить задачу выполненной."""
+
+        current_task: TaskEntity | None = await self.task_repo.get_task_by_id(task_id)
+        if not current_task:
+            return None
+
+        current_task.mark_completed()
+        return await self.task_repo.change_instance(current_task)
+
     @staticmethod
     def raise_if_deadline_in_past(deadline: datetime) -> None:
         """Метод проверяет, что дедлайн не стоит в прошлом"""
